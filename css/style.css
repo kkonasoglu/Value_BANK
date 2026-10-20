@@ -1,32 +1,47 @@
-/* css/style.css - Özel Stiller, Animasyonlar ve Fatura Yazdırma */
+/* css/style.css - Modern Fintech Tasarım Sistemi ve Animasyonlar */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --brand-primary: #2563eb;
+    --brand-success: #059669;
+    --brand-danger: #e11d48;
+    --brand-warning: #d97706;
+}
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f8fafc;
+    color: #0f172a;
 }
 
-/* Özel Scrollbar */
+/* Sayısal Değerler İçin Eşit Genişlikli (Tabular) Rakamlar */
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Modern İnce Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
 }
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
-    border-radius: 4px;
+    border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
 
-/* Tab Geçiş Animasyonları */
+/* Tab Geçiş Animasyonu */
 .tab-content {
     display: none;
-    animation: fadeIn 0.2s ease-in-out;
+    animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tab-content.active {
     display: block;
@@ -35,7 +50,7 @@ body {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(6px);
     }
     to {
         opacity: 1;
@@ -43,10 +58,29 @@ body {
     }
 }
 
+/* Glassmorphism ve Modern Kartlar */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.modern-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modern-card:hover {
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
+    border-color: rgba(203, 213, 225, 0.9);
+}
+
 /* Modal Arka Planı ve Animasyonu */
 .modal-backdrop {
-    background-color: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(2px);
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     transition: opacity 0.2s ease-in-out;
 }
 
@@ -57,7 +91,7 @@ body {
 @keyframes modalSlide {
     from {
         opacity: 0;
-        transform: scale(0.96) translateY(-10px);
+        transform: scale(0.97) translateY(-8px);
     }
     to {
         opacity: 1;
@@ -65,7 +99,7 @@ body {
     }
 }
 
-/* Toast Bildirimleri */
+/* Toast Bildirimleri (Modern Yüzen Bildirimler) */
 #toast-container {
     position: fixed;
     bottom: 24px;
@@ -73,74 +107,68 @@ body {
     z-index: 99999;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     pointer-events: none;
 }
 
 .toast {
     pointer-events: auto;
-    min-width: 300px;
-    max-width: 420px;
-    padding: 14px 18px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    min-width: 280px;
+    max-width: 400px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    gap: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
     animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
 @keyframes toastIn {
     from {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateX(20px) scale(0.96);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
     }
 }
 
 .toast-success {
     background-color: #064e3b;
     color: #ecfdf5;
-    border: 1px solid #059669;
+    border: 1px solid rgba(5, 150, 105, 0.4);
 }
 .toast-error {
-    background-color: #7f1d1d;
-    color: #fef2f2;
-    border: 1px solid #dc2626;
+    background-color: #881337;
+    color: #fff1f2;
+    border: 1px solid rgba(225, 29, 72, 0.4);
 }
 .toast-info {
-    background-color: #1e3a8a;
-    color: #eff6ff;
-    border: 1px solid #2563eb;
+    background-color: #0f172a;
+    color: #f8fafc;
+    border: 1px solid rgba(51, 65, 85, 0.5);
 }
 
-/* ================= MOBİL & RESPONSIVE GELİŞTİRMELER ================= */
+/* Mobil İyileştirmeler */
 .overflow-x-auto {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Mobilde iOS form odaklanma yakınlaştırmasını önleme (16px kuralı) */
 @media (max-width: 640px) {
     input:not([type="checkbox"]):not([type="radio"]), 
     select, 
     textarea {
         font-size: 15px !important;
     }
-}
-
-/* Mobilde Toast Bildirimleri (Alttaki menünün üstünde zarif durması için) */
-@media (max-width: 640px) {
     #toast-container {
-        left: 12px;
-        right: 12px;
-        bottom: 76px;
-        align-items: stretch;
+        left: 14px;
+        right: 14px;
+        bottom: 78px;
     }
     .toast {
         min-width: 0;
@@ -151,38 +179,6 @@ body {
     }
 }
 
-/* Alt Menü Çubuğu Güvenli Alanı (iPhone Çentiği / Home Bar) */
 .mobile-bottom-nav {
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
-}
-
-/* TABLOLAR İÇİN SABİT GÖRÜNÜM */
-.table-container {
-    overflow-x: auto;
-    border-radius: 0.75rem;
-}
-
-/* Fatura Baskı / Yazdırma (Print) Görünümü */
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    #print-invoice-area, #print-invoice-area * {
-        visibility: visible;
-    }
-    #print-invoice-area {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 20px;
-        background: white !important;
-        color: black !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    .no-print {
-        display: none !important;
-    }
 }

@@ -83,11 +83,11 @@ const App = {
         // Masaüstü Sidebar Nav İtemleri
         document.querySelectorAll('.nav-item').forEach(el => {
             if (el.getAttribute('data-tab') === tabId) {
-                el.classList.add('bg-blue-600', 'text-white');
-                el.classList.remove('hover:bg-slate-800', 'text-slate-300');
+                el.classList.add('bg-blue-600', 'text-white', 'shadow-sm', 'font-semibold');
+                el.classList.remove('hover:bg-slate-800/80', 'text-slate-400', 'hover:text-slate-200');
             } else {
-                el.classList.remove('bg-blue-600', 'text-white');
-                el.classList.add('text-slate-300', 'hover:bg-slate-800');
+                el.classList.remove('bg-blue-600', 'text-white', 'shadow-sm', 'font-semibold');
+                el.classList.add('text-slate-400', 'hover:bg-slate-800/80', 'hover:text-slate-200');
             }
         });
 
@@ -661,15 +661,6 @@ const App = {
                 // Kasadan Cebe çekilmişti: Kasaya iade et, cepten düş
                 if (kasaAcc) kasaAcc.balance += trx.amount;
                 if (activeAcc) activeAcc.balance -= trx.amount;
-            } else if (trx.targetFundId) {
-                // Eski fon uyumluluğu
-                const fundAcc = DataStore.data.accounts.find(a => a.id === trx.targetFundId);
-                if (fundAcc) fundAcc.balance -= trx.amount;
-                if (activeAcc) activeAcc.balance += trx.amount;
-            } else if (trx.sourceFundId) {
-                const fundAcc = DataStore.data.accounts.find(a => a.id === trx.sourceFundId);
-                if (fundAcc) fundAcc.balance += trx.amount;
-                if (activeAcc) activeAcc.balance -= trx.amount;
             } else {
                 const acc = DataStore.data.accounts.find(a => a.id === trx.accountId);
                 if (acc) {
@@ -685,7 +676,6 @@ const App = {
         }
     },
 
-    // ================= 3. ABONELİKLER =================
     // ================= 3. ABONELİKLER & DÜZENLİ GELİR/GİDER =================
     renderSubscriptions() {
         const subscriptions = DataStore.data.subscriptions || [];
@@ -1296,7 +1286,6 @@ const App = {
         }
     },
 
-    // ================= 5. FON & YATIRIM (KASA, ALTIN, FON) =================
     // ================= 5. KASA & AKTARIM (ACİL DURUM GÜVENCESİ) =================
     openTransferToKasaModal(direction = 'to_kasa') {
         const form = document.getElementById('kasa-transfer-form');

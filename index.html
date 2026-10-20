@@ -4,80 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kişisel Gelir & Gider Takip</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex">
+<body class="bg-slate-50/90 text-slate-800 antialiased min-h-screen flex selection:bg-blue-500 selection:text-white">
 
     <!-- MOBİL MENÜ KARARTMA ARKA PLANI (BACKDROP) -->
-    <div id="mobile-sidebar-backdrop" onclick="App.closeMobileSidebar()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity duration-300"></div>
+    <div id="mobile-sidebar-backdrop" onclick="App.closeMobileSidebar()" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300"></div>
 
-    <!-- SOL KENAR ÇUBUĞU (SIDEBAR) - Masaüstünde Sabit, Mobilde Açılır Çekmece -->
-    <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] lg:w-64 lg:static lg:translate-x-0 -translate-x-full bg-slate-900 text-slate-300 flex flex-col shrink-0 min-h-screen select-none transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
+    <!-- SOL KENAR ÇUBUĞU (SIDEBAR) - Modern Dark Elevation -->
+    <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] lg:w-64 lg:static lg:translate-x-0 -translate-x-full bg-slate-950 border-r border-slate-800/80 text-slate-300 flex flex-col shrink-0 min-h-screen select-none transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
         <!-- Logo / Başlık -->
-        <div class="h-16 flex items-center justify-between px-5 border-b border-slate-800">
+        <div class="h-16 flex items-center justify-between px-5 border-b border-slate-800/80 bg-slate-950/60">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/25 ring-1 ring-white/20">
                     <i data-lucide="wallet-cards" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold text-white tracking-tight leading-tight">GelirGiderim</h1>
-                    <span class="text-[10px] font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/60">Sade Bütçe</span>
+                    <h1 class="text-base font-extrabold text-white tracking-tight leading-tight">GelirGiderim</h1>
+                    <span class="text-[10px] font-bold tracking-wider text-emerald-400 uppercase bg-emerald-950/80 px-1.5 py-0.5 rounded-md border border-emerald-800/60">Kişisel Bütçe</span>
                 </div>
             </div>
             <!-- Mobilde Kapatma Butonu -->
-            <button type="button" onclick="App.closeMobileSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800" title="Menüyü Kapat">
+            <button type="button" onclick="App.closeMobileSidebar()" class="lg:hidden p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors" title="Menüyü Kapat">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
 
         <!-- Menü Öğeleri -->
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-            <a href="#dashboard" data-tab="dashboard" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white bg-blue-600 shadow-sm transition-colors">
+        <nav class="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+            <a href="#dashboard" data-tab="dashboard" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-white bg-blue-600 shadow-sm transition-all duration-150">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                 <span>Ana Sayfa</span>
             </a>
-            <a href="#transactions" data-tab="transactions" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
+            <a href="#transactions" data-tab="transactions" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-all duration-150">
                 <i data-lucide="receipt" class="w-4 h-4"></i>
                 <span>Tüm Hareketler</span>
             </a>
-            <a href="#subscriptions" data-tab="subscriptions" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
+            <a href="#subscriptions" data-tab="subscriptions" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-all duration-150">
                 <i data-lucide="repeat" class="w-4 h-4"></i>
                 <span>Aboneliklerim</span>
             </a>
-            <a href="#wishlist" data-tab="wishlist" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
+            <a href="#wishlist" data-tab="wishlist" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-all duration-150">
                 <i data-lucide="shopping-bag" class="w-4 h-4 text-teal-400"></i>
                 <div class="flex items-center justify-between flex-1">
                     <span>Alınacaklar</span>
                     <span id="nav-wishlist-count" class="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded font-bold border border-teal-500/30">0</span>
                 </div>
             </a>
-            <a href="#accounts" data-tab="accounts" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
+            <a href="#accounts" data-tab="accounts" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-all duration-150">
                 <i data-lucide="landmark" class="w-4 h-4"></i>
                 <span>Hesaplarım & Kasa</span>
             </a>
-            <div class="pt-4 mt-4 border-t border-slate-800">
-                <span class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Ayarlar</span>
+            <div class="pt-4 mt-3 border-t border-slate-800/80">
+                <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">Yönetim</span>
             </div>
-            <a href="#admin" data-tab="admin" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
+            <a href="#admin" data-tab="admin" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition-all duration-150">
                 <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
                 <span>Admin Paneli</span>
             </a>
         </nav>
 
         <!-- Alt Kullanıcı Bilgi Kartı -->
-        <div class="p-3 border-t border-slate-800">
-            <div class="bg-slate-800/80 rounded-xl p-3 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-emerald-600/30 text-emerald-400 flex items-center justify-center font-bold text-xs border border-emerald-500/30">
+        <div class="p-3 border-t border-slate-800/80 bg-slate-950/40">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex items-center gap-3 shadow-xs">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs ring-1 ring-emerald-500/30 shrink-0">
                     <i data-lucide="user" class="w-4 h-4"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-medium text-white truncate" id="sidebar-user-name">Benim Bütçem</p>
-                    <p class="text-[11px] text-slate-400 truncate">Kişisel Hesap</p>
+                    <p class="text-xs font-semibold text-white truncate" id="sidebar-user-name">Benim Bütçem</p>
+                    <p class="text-[10px] text-slate-400 truncate">Kişisel Hesap</p>
                 </div>
             </div>
         </div>
@@ -86,20 +101,20 @@
     <!-- SAĞ ANA İÇERİK ALANI -->
     <main class="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
         <!-- ÜST BAŞLIK ÇUBUĞU (TOPBAR) -->
-        <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+            <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                 <!-- Mobilde Hamburger Menü Butonu -->
-                <button type="button" onclick="App.toggleMobileSidebar()" class="lg:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none shrink-0" title="Menüyü Aç">
+                <button type="button" onclick="App.toggleMobileSidebar()" class="lg:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 active:scale-95 transition-all shrink-0" title="Menüyü Aç">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
                 <div class="min-w-0">
-                    <h2 id="page-title" class="text-base sm:text-xl font-bold text-slate-900 tracking-tight truncate">Ana Sayfa</h2>
-                    <span id="page-subtitle" class="text-[11px] sm:text-xs text-slate-500 line-clamp-1 block">Paranızın net durumu ve son işlemleriniz</span>
+                    <h2 id="page-title" class="text-base sm:text-lg font-bold text-slate-900 tracking-tight truncate">Ana Sayfa</h2>
+                    <span id="page-subtitle" class="text-[11px] sm:text-xs text-slate-500 truncate block">Paranızın net durumu ve son işlemleriniz</span>
                 </div>
             </div>
             <!-- Sağ Hızlı Aksiyon -->
             <div class="flex items-center gap-2">
-                <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-xs font-bold transition-colors">
+                <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100/90 text-emerald-700 border border-emerald-200/90 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-xs">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                     <span>Maaş / Gelir Ekle</span>
                 </button>
@@ -107,85 +122,85 @@
         </header>
 
         <!-- İÇERİK PANELLERİ -->
-        <div class="flex-1 p-3.5 sm:p-6 pb-24 lg:pb-8 space-y-4 sm:space-y-6 w-full">
+        <div class="flex-1 p-3.5 sm:p-6 pb-24 lg:pb-8 space-y-4 sm:space-y-6 w-full max-w-7xl mx-auto">
 
-            <!-- 1. ANA SAYFA (DASHBOARD) - TAM İSTENEN SADE YAPI -->
-            <section id="tab-dashboard" class="tab-content active space-y-6">
+            <!-- 1. ANA SAYFA (DASHBOARD) - SADE & MODERN YAPI -->
+            <section id="tab-dashboard" class="tab-content active space-y-5 sm:space-y-6">
                 
                 <!-- 5 ANA KUTU (Mobilde 2x2 + 1 Geniş Kasa, Masaüstünde 5 Sütun) -->
                 <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                     
                     <!-- KUTU 1: CEBİMDEKİ PARA -->
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Cebimdeki Para</span>
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">Cebimdeki Para</span>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0 ring-1 ring-blue-500/20">
                                 <i data-lucide="wallet" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
                         <div class="mt-3 sm:mt-4">
-                            <h3 id="box-total-money" class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight truncate">₺0,00</h3>
-                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 sm:mt-1 truncate">Harcanabilir nakit & banka</p>
+                            <h3 id="box-total-money" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight tabular-nums truncate">₺0,00</h3>
+                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Harcanabilir nakit & banka</p>
                         </div>
                     </div>
 
                     <!-- KUTU 2: TOPLAM GİDER -->
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Toplam Gider</span>
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">Toplam Gider</span>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0 ring-1 ring-rose-500/20">
                                 <i data-lucide="trending-down" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
                         <div class="mt-3 sm:mt-4">
-                            <h3 id="box-total-expense" class="text-lg sm:text-2xl font-bold text-rose-600 tracking-tight truncate">₺0,00</h3>
-                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 sm:mt-1 truncate">Bu ayki harcamalar</p>
+                            <h3 id="box-total-expense" class="text-xl sm:text-2xl font-extrabold text-rose-600 tracking-tight tabular-nums truncate">₺0,00</h3>
+                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Bu ayki harcamalar</p>
                         </div>
                     </div>
 
                     <!-- KUTU 3: ABONELİK GİDERLERİ -->
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Abonelik</span>
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate">Abonelik</span>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0 ring-1 ring-purple-500/20">
                                 <i data-lucide="repeat" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
                         <div class="mt-3 sm:mt-4">
-                            <h3 id="box-sub-expense" class="text-lg sm:text-2xl font-bold text-purple-600 tracking-tight truncate">₺0,00</h3>
-                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 sm:mt-1 truncate">Düzenli taahhütler</p>
+                            <h3 id="box-sub-expense" class="text-xl sm:text-2xl font-extrabold text-purple-600 tracking-tight tabular-nums truncate">₺0,00</h3>
+                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">Düzenli taahhütler</p>
                         </div>
                     </div>
 
                     <!-- KUTU 4: ALINACAKLAR (TAHMİNİ GİDER) -->
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onclick="App.switchTab('wishlist')">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between cursor-pointer group" onclick="App.switchTab('wishlist')">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Alınacaklar</span>
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate group-hover:text-teal-600 transition-colors">Alınacaklar</span>
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0 ring-1 ring-teal-500/20 group-hover:scale-105 transition-transform">
                                 <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
                         <div class="mt-3 sm:mt-4">
-                            <h3 id="box-wishlist-expense" class="text-lg sm:text-2xl font-bold text-teal-600 tracking-tight truncate">₺0,00</h3>
-                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 sm:mt-1 truncate" id="box-wishlist-sub">Bu ayki bütçe</p>
+                            <h3 id="box-wishlist-expense" class="text-xl sm:text-2xl font-extrabold text-teal-600 tracking-tight tabular-nums truncate">₺0,00</h3>
+                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate" id="box-wishlist-sub">Bu ayki bütçe</p>
                         </div>
                     </div>
 
                     <!-- KUTU 5: KASA (ACİL DURUM PARASI) + AKTAR BUTONU -->
-                    <div class="col-span-2 sm:col-span-1 lg:col-span-1 bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div class="col-span-2 sm:col-span-1 lg:col-span-1 modern-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500">Kasa (Acil Durum)</span>
-                            <button onclick="App.openTransferToKasaModal()" class="flex items-center gap-1 px-2.5 sm:px-3 py-1 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-lg text-[11px] sm:text-xs font-bold shadow-sm transition-all cursor-pointer" title="Cebimden Kasaya Para Aktar">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">Kasa (Güvence)</span>
+                            <button onclick="App.openTransferToKasaModal()" class="flex items-center gap-1 px-2.5 sm:px-3 py-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 active:scale-95 text-white rounded-lg text-[11px] sm:text-xs font-bold shadow-xs transition-all cursor-pointer" title="Cebimden Kasaya Para Aktar">
                                 <i data-lucide="arrow-right-left" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
                                 <span>Aktar</span>
                             </button>
                         </div>
                         <div class="mt-3 sm:mt-4 flex items-baseline justify-between">
                             <div>
-                                <h3 id="box-emergency-money" class="text-lg sm:text-2xl font-bold text-amber-600 tracking-tight">₺0,00</h3>
-                                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 sm:mt-1">Ayrılan güvence</p>
+                                <h3 id="box-emergency-money" class="text-xl sm:text-2xl font-extrabold text-amber-600 tracking-tight tabular-nums">₺0,00</h3>
+                                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Ayrılan güvence</p>
                             </div>
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 ring-1 ring-amber-500/20">
                                 <i data-lucide="shield-alert" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                             </div>
                         </div>
@@ -194,9 +209,9 @@
                 </div>
 
                 <!-- AYLIK MAAŞ TAKİBİ & AY SEÇİM KARTI -->
-                <div class="bg-gradient-to-r from-emerald-500/10 via-teal-50/50 to-white border border-emerald-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="bg-gradient-to-r from-emerald-500/10 via-teal-50/60 to-white border border-emerald-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div class="flex items-start sm:items-center gap-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 ring-1 ring-white/40 shrink-0">
                             <i data-lucide="badge-dollar-sign" class="w-6 h-6"></i>
                         </div>
                         <div>
@@ -233,15 +248,15 @@
 
                 <!-- KUTULARIN ALTINDAKİ 2 BÜYÜK AKSİYON BUTONU -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="flex items-center justify-center gap-2.5 sm:gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-2xl shadow-sm transition-all hover:shadow-md active:scale-98 text-xs sm:text-sm">
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-500/40 flex items-center justify-center shrink-0">
+                    <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3.5 px-4 sm:px-6 rounded-2xl shadow-sm hover:shadow-emerald-500/20 active:scale-[0.98] transition-all text-xs sm:text-sm">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
                             <i data-lucide="plus" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         <span>+ Gelir Ekle (Maaş vb.)</span>
                     </button>
 
-                    <button onclick="App.openTransactionModal('expense')" class="flex items-center justify-center gap-2.5 sm:gap-3 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-2xl shadow-sm transition-all hover:shadow-md active:scale-98 text-xs sm:text-sm">
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-500/40 flex items-center justify-center shrink-0">
+                    <button onclick="App.openTransactionModal('expense')" class="flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-bold py-3.5 px-4 sm:px-6 rounded-2xl shadow-sm hover:shadow-rose-500/20 active:scale-[0.98] transition-all text-xs sm:text-sm">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
                             <i data-lucide="minus" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         <span>- Gider Ekle (Harcama)</span>
@@ -249,18 +264,23 @@
                 </div>
 
                 <!-- ONLARIN ALTINDAKİ: SON 7 İŞLEM TABLOSU -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                    <div class="p-3.5 sm:p-4 border-b border-slate-100 flex items-center justify-between">
+                <div class="modern-card rounded-2xl overflow-hidden flex flex-col">
+                    <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                         <div class="flex items-center gap-2">
-                            <i data-lucide="history" class="w-4 h-4 text-blue-600"></i>
+                            <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i data-lucide="history" class="w-4 h-4"></i>
+                            </div>
                             <h4 class="font-bold text-slate-800 text-sm">Son 7 İşlem</h4>
                         </div>
-                        <button onclick="App.switchTab('transactions')" class="text-xs font-semibold text-blue-600 hover:text-blue-700">Tümünü Gör &rarr;</button>
+                        <button onclick="App.switchTab('transactions')" class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                            <span>Tümünü Gör</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </button>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs min-w-[560px]">
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
+                            <thead class="bg-slate-50/80 text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100">
                                 <tr>
                                     <th class="py-3 px-4">Tarih</th>
                                     <th class="py-3 px-4">Tür</th>
@@ -282,38 +302,38 @@
 
             <!-- 2. TÜM HAREKETLER TABI -->
             <section id="tab-transactions" class="tab-content space-y-4 sm:space-y-5">
-                <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
+                <div class="modern-card p-3.5 sm:p-4 rounded-2xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
                     <div class="grid grid-cols-2 sm:flex items-center gap-2 sm:gap-3 w-full md:w-auto">
                         <div class="relative col-span-2 sm:flex-1 md:w-64">
-                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                            <input type="text" id="trx-search" placeholder="Açıklama veya kategori ara..." oninput="App.renderTransactions()" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="trx-search" placeholder="Açıklama veya kategori ara..." oninput="App.renderTransactions()" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                         </div>
-                        <select id="trx-filter-type" onchange="App.renderTransactions()" class="bg-slate-50 border border-slate-200 rounded-lg text-xs py-2 px-2.5 sm:px-3 text-slate-700">
+                        <select id="trx-filter-type" onchange="App.renderTransactions()" class="bg-slate-50 border border-slate-200 rounded-xl text-xs py-2 px-3 text-slate-700 font-semibold focus:outline-none cursor-pointer">
                             <option value="all">Tümü (Gelir & Gider)</option>
                             <option value="income">Sadece Gelirler</option>
                             <option value="expense">Sadece Giderler</option>
                         </select>
-                        <select id="trx-filter-account" onchange="App.renderTransactions()" class="bg-slate-50 border border-slate-200 rounded-lg text-xs py-2 px-2.5 sm:px-3 text-slate-700">
+                        <select id="trx-filter-account" onchange="App.renderTransactions()" class="bg-slate-50 border border-slate-200 rounded-xl text-xs py-2 px-3 text-slate-700 font-medium focus:outline-none cursor-pointer">
                             <option value="all">Tüm Hesaplar</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-2 sm:flex items-center gap-2 w-full md:w-auto">
-                        <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 sm:px-4 py-2 rounded-lg shadow-sm transition-all">
+                        <button onclick="App.openTransactionModal('income', 'Aylık Maaş')" class="flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold px-3.5 sm:px-4 py-2 rounded-xl shadow-xs active:scale-95 transition-all">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             <span>+ Gelir</span>
                         </button>
-                        <button onclick="App.openTransactionModal('expense')" class="flex items-center justify-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3 sm:px-4 py-2 rounded-lg shadow-sm transition-all">
+                        <button onclick="App.openTransactionModal('expense')" class="flex items-center justify-center gap-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white text-xs font-bold px-3.5 sm:px-4 py-2 rounded-xl shadow-xs active:scale-95 transition-all">
                             <i data-lucide="minus" class="w-4 h-4"></i>
                             <span>- Gider</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="modern-card rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs min-w-[620px]">
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <thead class="bg-slate-50/80 text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100">
                                 <tr>
                                     <th class="py-3 px-4">Tarih</th>
                                     <th class="py-3 px-4">İşlem Türü</th>
@@ -334,27 +354,27 @@
 
             <!-- 3. ABONELİKLER TABI -->
             <section id="tab-subscriptions" class="tab-content space-y-4 sm:space-y-5">
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 modern-card p-4 rounded-2xl">
                     <div>
                         <h4 class="font-bold text-slate-800 text-sm">Düzenli Abonelik Listesi</h4>
                         <p class="text-[11px] sm:text-xs text-slate-500">Her ay belirlediğiniz günde otomatik hesaplanır</p>
                     </div>
                     <div class="grid grid-cols-1 sm:flex items-center gap-2 sm:gap-3">
-                        <button onclick="App.processDueSubscriptions()" class="flex items-center justify-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3.5 py-2 rounded-lg transition-all">
+                        <button onclick="App.processDueSubscriptions()" class="flex items-center justify-center gap-1.5 bg-emerald-50 hover:bg-emerald-100/90 text-emerald-700 border border-emerald-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-all active:scale-95 shadow-xs">
                             <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                             <span>Günü Gelenleri Ekle</span>
                         </button>
-                        <button onclick="App.openSubscriptionModal()" class="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow-sm transition-all">
+                        <button onclick="App.openSubscriptionModal()" class="flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             <span>+ Yeni Abonelik Ekle</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="modern-card rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs min-w-[650px]">
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <thead class="bg-slate-50/80 text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100">
                                 <tr>
                                     <th class="py-3 px-4">Abonelik Adı</th>
                                     <th class="py-3 px-4">Kategori</th>
@@ -377,66 +397,66 @@
             <section id="tab-wishlist" class="tab-content space-y-4 sm:space-y-6">
                 <!-- 4 Özet Kutusu (Mobilde 2x2, Masaüstünde 4'lü) -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <span class="text-[10px] sm:text-xs font-semibold uppercase text-slate-400 block mb-0.5 sm:mb-1 truncate">Bu Ay Alınacak</span>
-                            <h4 id="wish-stat-this-month" class="text-lg sm:text-2xl font-bold text-teal-600 tracking-tight truncate">₺0,00</h4>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 truncate" id="wish-stat-this-month-sub">0 ürün bekleniyor</p>
+                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 truncate">Bu Ay Alınacak</span>
+                            <h4 id="wish-stat-this-month" class="text-xl sm:text-2xl font-extrabold text-teal-600 tracking-tight tabular-nums truncate">₺0,00</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 truncate" id="wish-stat-this-month-sub">0 ürün bekleniyor</p>
                         </div>
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 self-end sm:self-auto">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-500/10 text-teal-600 ring-1 ring-teal-500/20 flex items-center justify-center shrink-0 self-end sm:self-auto">
                             <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <span class="text-[10px] sm:text-xs font-semibold uppercase text-slate-400 block mb-0.5 sm:mb-1 truncate">Tüm Hedefler</span>
-                            <h4 id="wish-stat-all-pending" class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight truncate">₺0,00</h4>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 truncate" id="wish-stat-all-pending-sub">Gelecek aylar dahil</p>
+                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 truncate">Tüm Hedefler</span>
+                            <h4 id="wish-stat-all-pending" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight tabular-nums truncate">₺0,00</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 truncate" id="wish-stat-all-pending-sub">Gelecek aylar dahil</p>
                         </div>
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 self-end sm:self-auto">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/10 text-blue-600 ring-1 ring-blue-500/20 flex items-center justify-center shrink-0 self-end sm:self-auto">
                             <i data-lucide="layers" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <span class="text-[10px] sm:text-xs font-semibold uppercase text-slate-400 block mb-0.5 sm:mb-1 truncate">Satın Alınanlar</span>
-                            <h4 id="wish-stat-purchased" class="text-lg sm:text-2xl font-bold text-emerald-600 tracking-tight truncate">₺0,00</h4>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 truncate" id="wish-stat-purchased-sub">Satın alındı</p>
+                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 truncate">Satın Alınanlar</span>
+                            <h4 id="wish-stat-purchased" class="text-xl sm:text-2xl font-extrabold text-emerald-600 tracking-tight tabular-nums truncate">₺0,00</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 truncate" id="wish-stat-purchased-sub">Satın alındı</p>
                         </div>
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 self-end sm:self-auto">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20 flex items-center justify-center shrink-0 self-end sm:self-auto">
                             <i data-lucide="check-circle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
 
-                    <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="modern-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <span class="text-[10px] sm:text-xs font-semibold uppercase text-slate-400 block mb-0.5 sm:mb-1 truncate">İptal Edilenler</span>
-                            <h4 id="wish-stat-cancelled" class="text-lg sm:text-2xl font-bold text-slate-400 tracking-tight truncate">₺0,00</h4>
-                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1 truncate" id="wish-stat-cancelled-sub">Tasarruf edildi</p>
+                            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1 truncate">İptal Edilenler</span>
+                            <h4 id="wish-stat-cancelled" class="text-xl sm:text-2xl font-extrabold text-slate-400 tracking-tight tabular-nums truncate">₺0,00</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-500 mt-1 truncate" id="wish-stat-cancelled-sub">Tasarruf edildi</p>
                         </div>
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 self-end sm:self-auto">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 self-end sm:self-auto">
                             <i data-lucide="ban" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- Filtre ve Aksiyon Barı -->
-                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 modern-card p-3.5 sm:p-4 rounded-2xl">
                     <div class="grid grid-cols-2 sm:flex items-center gap-2.5 sm:gap-3 w-full md:w-auto">
                         <div class="relative col-span-2 sm:flex-1 md:w-56">
-                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                            <input type="text" id="wish-search" placeholder="Alınacak ürün ara..." oninput="App.renderWishlist()" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="wish-search" placeholder="Alınacak ürün ara..." oninput="App.renderWishlist()" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                         </div>
 
                         <!-- Ay Filtresi -->
-                        <select id="wish-filter-month" onchange="App.renderWishlist()" class="bg-slate-50 border border-slate-200 rounded-lg text-xs py-2 px-2.5 sm:px-3 text-slate-700 font-semibold">
+                        <select id="wish-filter-month" onchange="App.renderWishlist()" class="bg-slate-50 border border-slate-200 rounded-xl text-xs py-2 px-3 text-slate-700 font-bold focus:outline-none cursor-pointer">
                             <!-- Dinamik aylar -->
                         </select>
 
                         <!-- Durum Filtresi -->
-                        <select id="wish-filter-status" onchange="App.renderWishlist()" class="bg-slate-50 border border-slate-200 rounded-lg text-xs py-2 px-2.5 sm:px-3 text-slate-700">
+                        <select id="wish-filter-status" onchange="App.renderWishlist()" class="bg-slate-50 border border-slate-200 rounded-xl text-xs py-2 px-3 text-slate-700 font-medium focus:outline-none cursor-pointer">
                             <option value="all">Tüm Durumlar</option>
                             <option value="pending">Alınacaklar</option>
                             <option value="purchased">Alındı</option>
@@ -444,17 +464,17 @@
                         </select>
                     </div>
 
-                    <button onclick="App.openWishlistModal()" class="w-full md:w-auto flex items-center justify-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-all">
+                    <button onclick="App.openWishlistModal()" class="w-full md:w-auto flex items-center justify-center gap-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         <span>+ Yeni Alınacak Ekle</span>
                     </button>
                 </div>
 
                 <!-- Alınacaklar Tablosu -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="modern-card rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs min-w-[620px]">
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
+                            <thead class="bg-slate-50/80 text-slate-400 uppercase tracking-wider font-bold text-[10px] border-b border-slate-100">
                                 <tr>
                                     <th class="py-3 px-4">Hedef Ay</th>
                                     <th class="py-3 px-4">Alınacak Ürün / Hedef</th>
@@ -475,12 +495,12 @@
 
             <!-- 5. HESAPLARIM VE KASA TABI -->
             <section id="tab-accounts" class="tab-content space-y-4 sm:space-y-5">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 modern-card p-4 rounded-2xl">
                     <div>
                         <h3 class="text-sm sm:text-base font-bold text-slate-800">Hesaplarım ve Kasa (Acil Durum Parası)</h3>
                         <p class="text-[11px] sm:text-xs text-slate-500">Banka hesaplarınız ve acil durum paranızın güncel bakiyeleri</p>
                     </div>
-                    <button onclick="App.openAccountModal()" class="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-all">
+                    <button onclick="App.openAccountModal()" class="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         <span>+ Yeni Hesap Ekle</span>
                     </button>
@@ -494,7 +514,7 @@
             <!-- 6. ADMIN / İÇERİK YÖNETİM PANELİ -->
             <section id="tab-admin" class="tab-content space-y-4 sm:space-y-6">
                 <!-- Üst Bilgi Bannerı -->
-                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-4 sm:p-6 rounded-2xl text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
+                <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 p-4 sm:p-6 rounded-2xl text-white shadow-sm border border-slate-800/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30 shrink-0">
                             <i data-lucide="shield-check" class="w-5 h-5"></i>
@@ -504,7 +524,7 @@
                             <p class="text-[11px] sm:text-xs text-slate-300 mt-0.5">Tüm sayfalardaki başlıkları, kasa/hesap bakiyelerini ve kategorileri buradan özgürce düzenleyebilirsiniz</p>
                         </div>
                     </div>
-                    <button onclick="App.exportDataFile()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold border border-white/20 transition-colors shrink-0">
+                    <button onclick="App.exportDataFile()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold border border-white/20 transition-all active:scale-95 shrink-0">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         <span>JSON Yedeği Al</span>
                     </button>
@@ -512,48 +532,48 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     <!-- KART 1: GENEL SİSTEM & BAŞLIK AYARLARI -->
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
+                    <div class="modern-card p-4 sm:p-6 rounded-2xl space-y-3.5 sm:space-y-4">
                         <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
                             <i data-lucide="type" class="w-4 h-4 text-blue-600"></i>
                             <h4 class="font-bold text-slate-800 text-sm">Sayfa Başlıkları ve Genel Metinler</h4>
                         </div>
                         <form id="admin-general-form" onsubmit="App.saveAdminGeneral(event)" class="space-y-3.5 sm:space-y-4 text-xs">
                             <div>
-                                <label class="block text-slate-700 font-semibold mb-1">Kullanıcı / Bütçe Başlığı (Sol Altta ve Başlıkta)</label>
-                                <input type="text" id="admin-user-name" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                                <label class="block text-slate-700 font-semibold mb-1">Kullanıcı / Bütçe Başlığı</label>
+                                <input type="text" id="admin-user-name" required class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-slate-700 font-semibold mb-1">Para Birimi Sembolü</label>
-                                    <input type="text" id="admin-currency" value="₺" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-center">
+                                    <input type="text" id="admin-currency" value="₺" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-center focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 </div>
                                 <div>
                                     <label class="block text-slate-700 font-semibold mb-1">Aylık Net Maaş Tutarı (₺)</label>
-                                    <input type="number" id="admin-salary-target" step="100" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                                    <input type="number" id="admin-salary-target" step="100" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-slate-700 font-semibold mb-1">Maaş Günü (Ayın kaçında?)</label>
-                                    <select id="admin-salary-day" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                                    <select id="admin-salary-day" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none">
                                         <!-- 1 - 31 günleri dinamik doldurulur -->
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-slate-700 font-semibold mb-1">Maaşın Yattığı Banka Hesabı</label>
-                                    <select id="admin-salary-account" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                                    <select id="admin-salary-account" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none">
                                         <!-- Dinamik doldurulur -->
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl shadow-sm transition-all active:scale-95">
                                 Genel Metinleri Kaydet
                             </button>
                         </form>
                     </div>
 
                     <!-- KART 2: KASA VE HESAP BAKİYELERİNİ ANINDA DÜZENLEME -->
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
+                    <div class="modern-card p-4 sm:p-6 rounded-2xl space-y-3.5 sm:space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="wallet" class="w-4 h-4 text-emerald-600"></i>
@@ -570,40 +590,40 @@
                 <!-- KART 3: GELİR VE GİDER KATEGORİ YÖNETİMİ -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <!-- Gelir Kategorileri -->
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
+                    <div class="modern-card p-4 sm:p-6 rounded-2xl space-y-3.5 sm:space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-600"></i>
                                 <h4 class="font-bold text-slate-800 text-sm">Gelir Kategorileri</h4>
                             </div>
-                            <span class="text-[11px] text-slate-400" id="admin-income-cat-count">0 Kategori</span>
+                            <span class="text-[11px] font-semibold text-slate-400" id="admin-income-cat-count">0 Kategori</span>
                         </div>
                         <div id="admin-income-cats-list" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-1">
                             <!-- Dinamik gelir kategorileri etiketleri -->
                         </div>
                         <form onsubmit="App.addCategory(event, 'income')" class="flex gap-2 pt-2">
-                            <input type="text" id="new-income-cat-input" required placeholder="Yeni Gelir Kategorisi yazın..." class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shrink-0">
+                            <input type="text" id="new-income-cat-input" required placeholder="Yeni Gelir Kategorisi yazın..." class="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shrink-0 active:scale-95 transition-all">
                                 + Ekle
                             </button>
                         </form>
                     </div>
 
                     <!-- Gider Kategorileri -->
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
+                    <div class="modern-card p-4 sm:p-6 rounded-2xl space-y-3.5 sm:space-y-4">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-600"></i>
                                 <h4 class="font-bold text-slate-800 text-sm">Gider / Harcama Kategorileri</h4>
                             </div>
-                            <span class="text-[11px] text-slate-400" id="admin-expense-cat-count">0 Kategori</span>
+                            <span class="text-[11px] font-semibold text-slate-400" id="admin-expense-cat-count">0 Kategori</span>
                         </div>
                         <div id="admin-expense-cats-list" class="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-1">
                             <!-- Dinamik gider kategorileri etiketleri -->
                         </div>
                         <form onsubmit="App.addCategory(event, 'expense')" class="flex gap-2 pt-2">
-                            <input type="text" id="new-expense-cat-input" required placeholder="Yeni Gider Kategorisi yazın..." class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                            <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold shrink-0">
+                            <input type="text" id="new-expense-cat-input" required placeholder="Yeni Gider Kategorisi yazın..." class="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500/20">
+                            <button type="submit" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shrink-0 active:scale-95 transition-all">
                                 + Ekle
                             </button>
                         </form>
@@ -611,26 +631,26 @@
                 </div>
 
                 <!-- KART 4: VERİTABANI & YEDEKLEME -->
-                <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="modern-card p-4 sm:p-6 rounded-2xl">
                     <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
                         <i data-lucide="database" class="w-4 h-4 text-slate-600"></i>
                         <h4 class="font-bold text-slate-800 text-sm">Veri Sıfırlama ve Yedek İşlemleri</h4>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-                        <button onclick="App.exportDataFile()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-semibold text-xs transition-colors">
+                        <button onclick="App.exportDataFile()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs transition-colors active:scale-95">
                             <i data-lucide="download" class="w-4 h-4 text-blue-600"></i>
                             <span>JSON Yedek İndir</span>
                         </button>
-                        <label class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-semibold text-xs cursor-pointer transition-colors text-center">
+                        <label class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-xs cursor-pointer transition-colors text-center active:scale-95">
                             <i data-lucide="upload" class="w-4 h-4 text-emerald-600"></i>
                             <span>JSON Yedek Yükle</span>
                             <input type="file" id="import-file" accept=".json" onchange="App.importDataFile(event)" class="hidden">
                         </label>
-                        <button onclick="App.resetToDefaultData()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg font-semibold text-xs border border-amber-200 transition-colors">
+                        <button onclick="App.resetToDefaultData()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl font-bold text-xs border border-amber-200 transition-colors active:scale-95">
                             <i data-lucide="rotate-ccw" class="w-4 h-4 text-amber-600"></i>
                             <span>Örnek Verileri Yükle</span>
                         </button>
-                        <button onclick="App.clearAllData()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded-lg font-semibold text-xs border border-rose-200 transition-colors">
+                        <button onclick="App.clearAllData()" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-800 rounded-xl font-bold text-xs border border-rose-200 transition-colors active:scale-95">
                             <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
                             <span>Tüm Verileri Sıfırla</span>
                         </button>
@@ -642,52 +662,49 @@
     </main>
 
     <!-- ================= MOBİL ALT NAVİGASYON (SADECE TELEFONLARDA < lg GÖRÜNÜR) ================= -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 px-1 py-1.5 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] mobile-bottom-nav">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-30 glass-panel border-t border-slate-200/90 px-1 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] mobile-bottom-nav">
         <div class="grid grid-cols-6 items-center text-center">
-            <button type="button" class="mobile-nav-item active flex flex-col items-center justify-center py-1 px-1 rounded-xl text-blue-600 font-bold transition-colors" data-tab="dashboard">
+            <button type="button" class="mobile-nav-item active flex flex-col items-center justify-center py-1 px-1 rounded-xl text-blue-600 font-bold transition-all" data-tab="dashboard">
                 <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Ana Sayfa</span>
             </button>
-            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-colors" data-tab="transactions">
+            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-all" data-tab="transactions">
                 <i data-lucide="arrow-left-right" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Hareket</span>
             </button>
-            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-colors" data-tab="subscriptions">
+            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-all" data-tab="subscriptions">
                 <i data-lucide="repeat" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Abonelik</span>
             </button>
-            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-colors" data-tab="wishlist">
+            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-all" data-tab="wishlist">
                 <i data-lucide="shopping-bag" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Alınacak</span>
             </button>
-            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-colors" data-tab="accounts">
+            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-all" data-tab="accounts">
                 <i data-lucide="credit-card" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Hesap</span>
             </button>
-            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-colors" data-tab="admin">
+            <button type="button" class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 rounded-xl text-slate-400 transition-all" data-tab="admin">
                 <i data-lucide="shield-check" class="w-5 h-5 mb-0.5"></i>
                 <span class="text-[10px] leading-tight">Admin</span>
             </button>
         </div>
     </nav>
 
-        </div>
-    </main>
-
     <!-- ================= MODALLAR ================= -->
 
     <!-- 1. GELİR / GİDER HAREKETİ EKLEME MODALI -->
     <div id="modal-transaction" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-transaction')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
-                <div class="flex items-center gap-2">
-                    <div id="modal-trx-icon" class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-lg z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div id="modal-trx-icon" class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center ring-1 ring-emerald-500/20 shrink-0">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     </div>
                     <h3 id="modal-transaction-title" class="font-bold text-slate-900 text-sm sm:text-base">Gelir / Maaş Ekle</h3>
                 </div>
-                <button onclick="App.closeModal('modal-transaction')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-transaction')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -696,25 +713,25 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">İşlem Türü *</label>
-                        <select id="trx-type" onchange="App.onTrxTypeChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <select id="trx-type" onchange="App.onTrxTypeChange()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                             <option value="income">Gelir (Maaş vb.)</option>
                             <option value="expense">Gider (Harcama vb.)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Tutar (₺) *</label>
-                        <input type="number" id="trx-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900">
+                        <input type="number" id="trx-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-900 tabular-nums focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Tarih *</label>
-                        <input type="date" id="trx-date" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <input type="date" id="trx-date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Hesap *</label>
-                        <select id="trx-account-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <select id="trx-account-id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                             <!-- Dinamik hesaplar -->
                         </select>
                     </div>
@@ -722,13 +739,13 @@
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Kategori *</label>
-                    <select id="trx-category" onchange="App.onTrxCategoryChange()" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <select id="trx-category" onchange="App.onTrxCategoryChange()" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         <!-- Dinamik doldurulacak -->
                     </select>
                 </div>
 
                 <!-- MAAŞ KATEGORİSİ İÇİN AYLIK SEÇİM YARDIMCISI -->
-                <div id="trx-salary-helper" class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs space-y-2 hidden">
+                <div id="trx-salary-helper" class="p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-xs space-y-2 hidden">
                     <div class="flex items-center justify-between flex-wrap gap-1">
                         <label class="font-bold text-emerald-950 flex items-center gap-1.5">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
@@ -736,7 +753,7 @@
                         </label>
                         <span class="text-[10px] text-emerald-800 font-bold" id="trx-salary-day-note">Maaş Günü: Her ayın 15'i</span>
                     </div>
-                    <select id="trx-salary-month-select" onchange="App.onTrxSalaryMonthChange()" class="w-full px-2.5 py-1.5 bg-white border border-emerald-300 rounded-lg text-xs font-bold text-slate-800">
+                    <select id="trx-salary-month-select" onchange="App.onTrxSalaryMonthChange()" class="w-full px-3 py-2 bg-white border border-emerald-300 rounded-xl text-xs font-bold text-slate-800">
                         <!-- Dinamik aylar -->
                     </select>
                     <p class="text-[11px] text-emerald-700">Seçtiğiniz aya göre işlem tarihi ve açıklaması otomatik güncellenir.</p>
@@ -744,14 +761,14 @@
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Açıklama</label>
-                    <input type="text" id="trx-description" placeholder="Örn: Ekim ayı maaşı, market veya benzin" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="trx-description" placeholder="Örn: Ekim ayı maaşı, market veya benzin" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                 </div>
 
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-transaction')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-transaction')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" id="trx-submit-btn" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold shadow-sm transition-all">
+                    <button type="submit" id="trx-submit-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Kaydet
                     </button>
                 </div>
@@ -762,15 +779,15 @@
     <!-- 2. ABONELİK EKLEME / DÜZENLEME MODALI -->
     <div id="modal-subscription" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-subscription')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 ring-1 ring-purple-500/20 flex items-center justify-center shrink-0">
                         <i data-lucide="repeat" class="w-4 h-4"></i>
                     </div>
                     <h3 id="modal-sub-title" class="font-bold text-slate-900 text-sm sm:text-base">Yeni Abonelik / Düzenli Gider</h3>
                 </div>
-                <button onclick="App.closeModal('modal-subscription')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-subscription')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -780,25 +797,25 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">İşlem Türü *</label>
-                        <select id="sub-type" onchange="App.onSubTypeChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <select id="sub-type" onchange="App.onSubTypeChange()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                             <option value="expense">Düzenli Gider (Abonelik, Fatura)</option>
                             <option value="income">Düzenli Gelir (Maaş, Kira)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1" id="label-sub-name">Abonelik / Gelir Adı *</label>
-                        <input type="text" id="sub-name" required placeholder="Örn: Netflix veya Aylık Maaş" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                        <input type="text" id="sub-name" required placeholder="Örn: Netflix veya Aylık Maaş" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Aylık Tutar (₺) *</label>
-                        <input type="number" id="sub-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900">
+                        <input type="number" id="sub-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-900 tabular-nums focus:bg-white focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Her Ayın Kaçında? *</label>
-                        <select id="sub-billing-day" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <select id="sub-billing-day" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                             <!-- 1'den 31'e dinamik -->
                         </select>
                     </div>
@@ -807,13 +824,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Kategori</label>
-                        <select id="sub-category" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <select id="sub-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                             <!-- Dinamik kategoriler -->
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1" id="label-sub-account">İlgili Hesap</label>
-                        <select id="sub-account-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                        <select id="sub-account-id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none">
                             <!-- Dinamik hesaplar -->
                         </select>
                     </div>
@@ -821,14 +838,14 @@
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Paket / Not</label>
-                    <input type="text" id="sub-notes" placeholder="Örn: Aile Paketi veya Taahhütlü" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="sub-notes" placeholder="Örn: Aile Paketi veya Taahhütlü" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                 </div>
 
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-subscription')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-subscription')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold shadow-sm transition-all">
+                    <button type="submit" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Aboneliği Kaydet
                     </button>
                 </div>
@@ -839,17 +856,17 @@
     <!-- 3. HESAP EKLEME MODALI -->
     <div id="modal-account" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-account')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
                 <h3 class="font-bold text-slate-900 text-sm sm:text-base">Yeni Hesap / Kasa Ekle</h3>
-                <button onclick="App.closeModal('modal-account')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-account')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <form id="account-form" onsubmit="App.saveAccount(event)" class="p-4 sm:p-6 space-y-3.5 sm:space-y-4 text-xs overflow-y-auto flex-1">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Hesap Türü *</label>
-                    <select id="acc-type" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <select id="acc-type" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                         <option value="bank">Banka Hesabı</option>
                         <option value="emergency">Kasa (Acil Durum Parası)</option>
                         <option value="cash">Nakit Cüzdan</option>
@@ -858,21 +875,21 @@
                 </div>
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Hesap Adı *</label>
-                    <input type="text" id="acc-name" required placeholder="Örn: Garanti Maaş veya Acil Durum Kasası" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="acc-name" required placeholder="Örn: Garanti Maaş veya Acil Durum Kasası" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Açıklama</label>
-                    <input type="text" id="acc-iban" placeholder="Örn: Evdeki nakit acil durum fonu" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="acc-iban" placeholder="Örn: Evdeki nakit acil durum fonu" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Mevcut Bakiye (₺)</label>
-                    <input type="number" id="acc-balance" step="0.01" value="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                    <input type="number" id="acc-balance" step="0.01" value="0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold tabular-nums focus:bg-white focus:outline-none">
                 </div>
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-account')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-account')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm transition-all">
+                    <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Hesabı Ekle
                     </button>
                 </div>
@@ -883,15 +900,15 @@
     <!-- 4. ALINACAKLAR (HEDEF) EKLEME / DÜZENLEME MODALI -->
     <div id="modal-wishlist" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-wishlist')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-600 ring-1 ring-teal-500/20 flex items-center justify-center shrink-0">
                         <i data-lucide="shopping-bag" class="w-4 h-4"></i>
                     </div>
                     <h3 id="modal-wish-title" class="font-bold text-slate-900 text-sm sm:text-base">Yeni Alınacak / Hedef Ekle</h3>
                 </div>
-                <button onclick="App.closeModal('modal-wishlist')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-wishlist')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -899,30 +916,30 @@
                 <input type="hidden" id="wish-id">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Alınacak Ürün / Hizmet / Hedef Adı *</label>
-                    <input type="text" id="wish-title" required placeholder="Örn: Kışlık Bot, Robot Süpürge, Masa" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                    <input type="text" id="wish-title" required placeholder="Örn: Kışlık Bot, Robot Süpürge, Masa" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Tahmini Bedel (₺) *</label>
-                        <input type="number" id="wish-price" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900">
+                        <input type="number" id="wish-price" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-extrabold text-slate-900 tabular-nums focus:bg-white focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Hedef Alınacak Ay *</label>
-                        <input type="month" id="wish-month" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <input type="month" id="wish-month" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Kategori</label>
-                        <select id="wish-category" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <select id="wish-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                             <!-- Dinamik gider kategorileri -->
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Öncelik Derecesi</label>
-                        <select id="wish-priority" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                        <select id="wish-priority" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                             <option value="high">Yüksek Öncelik</option>
                             <option value="medium" selected>Orta Öncelik</option>
                             <option value="low">Düşük Öncelik</option>
@@ -932,14 +949,14 @@
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Not / Link / Model</label>
-                    <input type="text" id="wish-notes" placeholder="Örn: Su geçirmez model veya ürün linki" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="wish-notes" placeholder="Örn: Su geçirmez model veya ürün linki" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                 </div>
 
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-wishlist')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-wishlist')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-semibold shadow-sm transition-all">
+                    <button type="submit" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Kaydet
                     </button>
                 </div>
@@ -950,10 +967,10 @@
     <!-- 5. KASAYA PARA AKTAR MODALI -->
     <div id="modal-kasa-transfer" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-kasa-transfer')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-amber-50/70 shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-amber-50/70 shrink-0">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-sm shrink-0">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20 flex items-center justify-center shadow-xs shrink-0">
                         <i data-lucide="arrow-right-left" class="w-4 h-4"></i>
                     </div>
                     <div>
@@ -961,14 +978,14 @@
                         <p class="text-[11px] text-slate-500">Cebinizdeki paradan acil durum kasasına aktarım</p>
                     </div>
                 </div>
-                <button onclick="App.closeModal('modal-kasa-transfer')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-kasa-transfer')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <form id="kasa-transfer-form" onsubmit="App.saveKasaTransfer(event)" class="p-4 sm:p-6 space-y-3.5 sm:space-y-4 text-xs overflow-y-auto flex-1">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">İşlem Yönü *</label>
-                    <select id="kasa-transfer-direction" onchange="App.onKasaDirectionChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                    <select id="kasa-transfer-direction" onchange="App.onKasaDirectionChange()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                         <option value="to_kasa">Cebimden ➔ Kasaya Aktar (Birikim Yap)</option>
                         <option value="from_kasa">Kasadan ➔ Cebime Aktar (İhtiyaç / Para Çek)</option>
                     </select>
@@ -977,45 +994,45 @@
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Aktarılacak Tutar (₺) *</label>
                     <div class="relative">
-                        <input type="number" id="kasa-transfer-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-base font-bold text-slate-900 pr-10">
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₺</span>
+                        <input type="number" id="kasa-transfer-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-extrabold text-slate-900 tabular-nums pr-10 focus:bg-white focus:outline-none">
+                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₺</span>
                     </div>
                     <!-- Hızlı Tutar Seçimi -->
                     <div class="flex items-center gap-1.5 mt-2 flex-wrap">
-                        <button type="button" onclick="App.setKasaQuickAmount(1000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+1.000 ₺</button>
-                        <button type="button" onclick="App.setKasaQuickAmount(2500)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+2.500 ₺</button>
-                        <button type="button" onclick="App.setKasaQuickAmount(5000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+5.000 ₺</button>
-                        <button type="button" onclick="App.setKasaQuickAmount(10000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+10.000 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(1000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[11px] transition-colors active:scale-95">+1.000 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(2500)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[11px] transition-colors active:scale-95">+2.500 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(5000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[11px] transition-colors active:scale-95">+5.000 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(10000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[11px] transition-colors active:scale-95">+10.000 ₺</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1" id="label-kasa-pocket-acc">Cebimdeki Hesap *</label>
-                        <select id="kasa-pocket-account-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <select id="kasa-pocket-account-id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                             <!-- Dinamik cebimdeki hesaplar (Maaş / Nakit) -->
                         </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Tarih *</label>
-                        <input type="date" id="kasa-transfer-date" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                        <input type="date" id="kasa-transfer-date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Açıklama / Not</label>
-                    <input type="text" id="kasa-transfer-note" placeholder="Örn: Maaştan kenara ayrılan acil durum güvencesi" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="kasa-transfer-note" placeholder="Örn: Maaştan kenara ayrılan acil durum güvencesi" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:outline-none">
                 </div>
 
-                <div id="kasa-info-box" class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-[11px] leading-relaxed">
+                <div id="kasa-info-box" class="p-3.5 bg-amber-50/80 border border-amber-200/90 rounded-2xl text-amber-900 text-[11px] leading-relaxed">
                     <strong>Bilgi:</strong> Belirlediğiniz tutar cebinizdeki harcanabilir paradan düşecek ve <strong>Kasa (Acil Durum)</strong> hesabınıza eklenecektir.
                 </div>
 
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-kasa-transfer')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-kasa-transfer')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" id="kasa-transfer-submit-btn" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold shadow-sm transition-all">
+                    <button type="submit" id="kasa-transfer-submit-btn" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Kasaya Aktar
                     </button>
                 </div>
@@ -1026,10 +1043,10 @@
     <!-- 6. MAAŞ AYARLARI MODALI -->
     <div id="modal-salary-settings" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-salary-settings')"></div>
-        <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col">
-            <div class="px-4 sm:px-6 py-3.5 border-b border-slate-200 flex items-center justify-between bg-emerald-50/80 shrink-0">
+        <div class="modal-content relative bg-white rounded-3xl shadow-2xl w-full max-w-md z-10 overflow-hidden max-h-[92vh] flex flex-col border border-slate-100">
+            <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-emerald-50/80 shrink-0">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-sm shrink-0">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 flex items-center justify-center shadow-xs shrink-0">
                         <i data-lucide="calendar" class="w-4 h-4"></i>
                     </div>
                     <div>
@@ -1037,32 +1054,32 @@
                         <p class="text-[11px] text-slate-500">Maaşınızı ayın hangi gününde aldığınızı belirleyin</p>
                     </div>
                 </div>
-                <button onclick="App.closeModal('modal-salary-settings')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition-colors">
+                <button onclick="App.closeModal('modal-salary-settings')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-200/60 transition-colors">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <form id="salary-settings-form" onsubmit="App.saveSalarySettings(event)" class="p-4 sm:p-6 space-y-3.5 sm:space-y-4 text-xs overflow-y-auto flex-1">
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Maaş Ödeme Günü (Ayın kaçında alıyorsunuz?) *</label>
-                    <select id="modal-salary-day" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                    <select id="modal-salary-day" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:outline-none">
                         <!-- 1 - 31 günleri dinamik doldurulur -->
                     </select>
                     <p class="text-[11px] text-slate-400 mt-1">Her ay belirlediğiniz bu günde maaş takibi hatırlatılır ve tek tıkla hesaba eklenir.</p>
                 </div>
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Aylık Net Maaş Tutarı (₺) *</label>
-                    <input type="number" id="modal-salary-amount" step="100" min="0" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900">
+                    <input type="number" id="modal-salary-amount" step="100" min="0" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-extrabold text-slate-900 tabular-nums focus:bg-white focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Maaşın Yattığı Banka Hesabı *</label>
-                    <select id="modal-salary-account" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                    <select id="modal-salary-account" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-none">
                     </select>
                 </div>
-                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-200 shrink-0">
-                    <button type="button" onclick="App.closeModal('modal-salary-settings')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
+                    <button type="button" onclick="App.closeModal('modal-salary-settings')" class="px-4 py-2.5 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-100 font-semibold active:scale-95 transition-all">
                         Vazgeç
                     </button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-sm transition-all">
+                    <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-sm active:scale-95 transition-all">
                         Maaş Ayarlarını Kaydet
                     </button>
                 </div>
