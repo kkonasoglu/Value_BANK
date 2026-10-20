@@ -31,12 +31,14 @@ const App = {
 
     // ================= SEKMELER VE GEÇİŞLER =================
     setupNavigation() {
-        const navItems = document.querySelectorAll('.nav-item');
+        const navItems = document.querySelectorAll('.nav-item, .mobile-nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetTab = item.getAttribute('data-tab');
-                this.switchTab(targetTab);
+                if (targetTab) {
+                    this.switchTab(targetTab);
+                }
             });
         });
 
@@ -48,9 +50,37 @@ const App = {
         }
     },
 
+    toggleMobileSidebar() {
+        const sidebar = document.getElementById('app-sidebar');
+        if (!sidebar) return;
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+            this.closeMobileSidebar();
+        } else {
+            this.openMobileSidebar();
+        }
+    },
+
+    openMobileSidebar() {
+        const sidebar = document.getElementById('app-sidebar');
+        const backdrop = document.getElementById('mobile-sidebar-backdrop');
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (backdrop) backdrop.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+    },
+
+    closeMobileSidebar() {
+        const sidebar = document.getElementById('app-sidebar');
+        const backdrop = document.getElementById('mobile-sidebar-backdrop');
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (backdrop) backdrop.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+    },
+
     switchTab(tabId) {
         this.currentTab = tabId;
 
+        // Masaüstü Sidebar Nav İtemleri
         document.querySelectorAll('.nav-item').forEach(el => {
             if (el.getAttribute('data-tab') === tabId) {
                 el.classList.add('bg-blue-600', 'text-white');
@@ -60,6 +90,19 @@ const App = {
                 el.classList.add('text-slate-300', 'hover:bg-slate-800');
             }
         });
+
+        // Mobil Alt Menü İtemleri
+        document.querySelectorAll('.mobile-nav-item').forEach(el => {
+            if (el.getAttribute('data-tab') === tabId) {
+                el.classList.add('text-blue-600', 'font-bold');
+                el.classList.remove('text-slate-400');
+            } else {
+                el.classList.remove('text-blue-600', 'font-bold');
+                el.classList.add('text-slate-400');
+            }
+        });
+
+        this.closeMobileSidebar();
 
         document.querySelectorAll('.tab-content').forEach(section => {
             section.classList.remove('active');

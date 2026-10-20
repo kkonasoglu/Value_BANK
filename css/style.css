@@ -120,6 +120,42 @@ body {
     border: 1px solid #2563eb;
 }
 
+/* ================= MOBİL & RESPONSIVE GELİŞTİRMELER ================= */
+.overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobilde iOS form odaklanma yakınlaştırmasını önleme (16px kuralı) */
+@media (max-width: 640px) {
+    input:not([type="checkbox"]):not([type="radio"]), 
+    select, 
+    textarea {
+        font-size: 15px !important;
+    }
+}
+
+/* Mobilde Toast Bildirimleri (Alttaki menünün üstünde zarif durması için) */
+@media (max-width: 640px) {
+    #toast-container {
+        left: 12px;
+        right: 12px;
+        bottom: 76px;
+        align-items: stretch;
+    }
+    .toast {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        padding: 11px 14px;
+        font-size: 0.8125rem;
+    }
+}
+
+/* Alt Menü Çubuğu Güvenli Alanı (iPhone Çentiği / Home Bar) */
+.mobile-bottom-nav {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
 /* TABLOLAR İÇİN SABİT GÖRÜNÜM */
 .table-container {
     overflow-x: auto;
