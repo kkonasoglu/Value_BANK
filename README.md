@@ -19,7 +19,15 @@ Kişisel bütçenizi, cebinizdeki harcanabilir aktif paranızı, aylık maaşın
 
 ---
 
-### 2. 🛡️ Kasa & Hızlı Para Aktarımı
+### 2. 💵 Aylık Maaş Takibi, Maaş Günü ve Ay Seçimi
+- **Maaş Günü Seçimi (1 - 31 Gün):** Maaşınızı ayın hangi gününde aldığınızı (Örn: Her ayın 15'i, 1'i vb.) doğrudan ana sayfadaki karttan veya Admin panelinden belirleyin.
+- **Aylık Seçim & Durum Kontrolü:** İster içinde bulunduğunuz ayı, ister geçmiş veya gelecek ayları seçerek o ayın maaşının yatıp yatmadığını anında görün.
+- **Tek Tıkla Maaşı Hesaba Yatırma:** Maaş günü geldiğinde veya erken yattığında tek tıkla (`Maaşı Hesaba Yatır`) maaş tutarınız banka hesabınıza eklenir ve gelir dökümünüze işlenir.
+- **Gelir Ekleme Entegrasyonu:** "+ Gelir Ekle" penceresinde "Aylık Maaş" seçildiğinde hangi ayın maaşı olduğu seçilebilir; tarih kullanıcının maaş gününe ve tutar kayıtlı maaşa otomatik ayarlanır.
+
+---
+
+### 3. 🛡️ Kasa & Hızlı Para Aktarımı
 - **Kasanın Yanındaki "Aktar" Butonu:**
   - **Cebimden ➔ Kasaya Aktar (Birikim):** Cebinizdeki harcanabilir hesaptan belirlediğiniz tutar düşer, Kasa bakiyesine eklenir. Hızlı seçim butonları (+1.000 ₺, +2.500 ₺, +5.000 ₺, +10.000 ₺) mevcuttur.
   - **Kasadan ➔ Cebime Aktar (İhtiyaç):** Kasanızdan para çekilir, harcanabilir aktif hesabınıza aktarılır ve gelir hanenize eklenir.

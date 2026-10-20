@@ -7,6 +7,8 @@ const INITIAL_DATA = {
     settings: {
         userName: "Benim Bütçem",
         monthlySalaryTarget: 65000,
+        salaryDay: 15, // Ayın 15'i (veya kullanıcının seçtiği gün)
+        salaryAccountId: "acc-1",
         currency: "₺"
     },
     // Hesaplar: Cebimdeki aktif para (bank & cash) ve Kasa (Acil Durum Parası)
@@ -48,7 +50,7 @@ const INITIAL_DATA = {
             type: "income", // DÜZENLİ GELİR
             category: "Aylık Maaş",
             amount: 65000.00,
-            billingDay: 1, // Her ayın 1'i
+            billingDay: 15, // Her ayın 15'i (Maaş Günü)
             accountId: "acc-1",
             status: "active",
             notes: "İş yerinden yatan net maaş"
@@ -166,12 +168,13 @@ const INITIAL_DATA = {
     transactions: [
         {
             id: "trx-1",
-            date: "2026-10-01",
+            date: "2026-10-15",
             type: "income",
             accountId: "acc-1",
             category: "Aylık Maaş",
             amount: 65000,
-            description: "Ekim 2026 Net Maaş Ödemesi"
+            description: "Ekim 2026 Net Maaş Ödemesi",
+            subscriptionId: "sub-0"
         },
         {
             id: "trx-2",
@@ -278,6 +281,10 @@ const DataStore = {
         if (stored) {
             try {
                 this.data = JSON.parse(stored);
+                if (!this.data.settings) this.data.settings = { ...INITIAL_DATA.settings };
+                if (!this.data.settings.salaryDay) this.data.settings.salaryDay = 15;
+                if (!this.data.settings.salaryAccountId) this.data.settings.salaryAccountId = "acc-1";
+                if (!this.data.settings.monthlySalaryTarget) this.data.settings.monthlySalaryTarget = 65000;
                 if (!this.data.subscriptions) this.data.subscriptions = JSON.parse(JSON.stringify(INITIAL_DATA.subscriptions));
                 if (!this.data.wishlist) this.data.wishlist = JSON.parse(JSON.stringify(INITIAL_DATA.wishlist));
                 if (!this.data.accounts) this.data.accounts = JSON.parse(JSON.stringify(INITIAL_DATA.accounts));
@@ -450,6 +457,93 @@ const DataStore = {
             allPendingCount: allPendingWishlist.length,
             currentMonth
         };
+    },
+
+    // ================= MAAŞ & AYLIK SEÇİM YARDIMCILARI =================
+    getSalarySettings() {
+        const s = this.data.settings || {};
+        return {
+            salaryDay: parseInt(s.salaryDay) || 15,
+            amount: parseFloat(s.monthlySalaryTarget) || 65000,
+            accountId: s.salaryAccountId || "acc-1"
+        };
+    },
+
+    setSalarySettings({ salaryDay, amount, accountId }) {
+        if (!this.data.settings) this.data.settings = {};
+        if (salaryDay !== undefined) this.data.settings.salaryDay = parseInt(salaryDay);
+        if (amount !== undefined) this.data.settings.monthlySalaryTarget = parseFloat(amount);
+        if (accountId !== undefined) this.data.settings.salaryAccountId = accountId;
+
+        // "Aylık Net Maaş" düzenli gelir (sub-0) ile senkronize et
+        const sub0 = (this.data.subscriptions || []).find(s => s.id === 'sub-0' || s.category === 'Aylık Maaş');
+        if (sub0) {
+            if (salaryDay !== undefined) sub0.billingDay = parseInt(salaryDay);
+            if (amount !== undefined) sub0.amount = parseFloat(amount);
+            if (accountId !== undefined) sub0.accountId = accountId;
+        }
+
+        this.save();
+    },
+
+    getSalaryTransactionForMonth(monthStr) {
+        if (!monthStr) return null;
+        return (this.data.transactions || []).find(t => 
+            t.date && t.date.startsWith(monthStr) &&
+            t.type === 'income' &&
+            (t.category === 'Aylık Maaş' || t.subscriptionId === 'sub-0' || (t.description && t.description.toLowerCase().includes('maaş')))
+        ) || null;
+    },
+
+    recordSalaryForMonth(monthStr, customAmount = null, customAccountId = null) {
+        const s = this.getSalarySettings();
+        const amount = customAmount !== null ? customAmount : s.amount;
+        const accountId = customAccountId || s.accountId;
+
+        // O ayın gün sayısını aşmayacak şekilde maaş gününü hesapla
+        const [year, month] = monthStr.split('-').map(Number);
+        const maxDaysInMonth = new Date(year, month, 0).getDate();
+        const day = Math.min(s.salaryDay, maxDaysInMonth);
+        const dateStr = `${monthStr}-${String(day).padStart(2, '0')}`;
+
+        const newTrx = {
+            id: this.generateId('trx'),
+            date: dateStr,
+            type: 'income',
+            accountId: accountId,
+            category: 'Aylık Maaş',
+            amount: amount,
+            description: `${this.formatMonthName(monthStr)} Net Maaş Ödemesi`,
+            subscriptionId: 'sub-0'
+        };
+
+        this.data.transactions.unshift(newTrx);
+
+        const acc = this.data.accounts.find(a => a.id === accountId);
+        if (acc) {
+            acc.balance += amount;
+        }
+
+        this.save();
+        return newTrx;
+    },
+
+    getMonthOptions(pastCount = 6, futureCount = 5) {
+        const options = [];
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        for (let i = -pastCount; i <= futureCount; i++) {
+            const d = new Date(currentYear, currentMonth + i, 1);
+            const yStr = d.getFullYear();
+            const mStr = String(d.getMonth() + 1).padStart(2, '0');
+            const ym = `${yStr}-${mStr}`;
+            const isCurrent = (i === 0);
+            const label = this.formatMonthName(ym) + (isCurrent ? ' (Bu Ay)' : '');
+            options.push({ value: ym, label, isCurrent });
+        }
+        return options;
     }
 };
 

@@ -2,8 +2,10 @@
 
 const App = {
     currentTab: 'dashboard',
+    selectedSalaryMonth: null,
 
     init() {
+        this.selectedSalaryMonth = DataStore.getCurrentMonth();
         this.setupNavigation();
         this.renderAll();
         this.updateUserDisplay();
@@ -142,6 +144,9 @@ const App = {
         const elEmergency = document.getElementById('box-emergency-money');
         if (elEmergency) elEmergency.textContent = DataStore.formatCurrency(metrics.kasaMoney);
 
+        // AYLIK MAAŞ TAKİBİ & AY SEÇİM KARTI
+        this.renderSalaryTracker();
+
         // SON 7 İŞLEM TABLOSU
         const recentTrx = [...DataStore.data.transactions]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -186,6 +191,154 @@ const App = {
         }
 
         if (window.lucide) lucide.createIcons();
+    },
+
+    // ================= MAAŞ & AYLIK SEÇİM SİSTEMİ =================
+    renderSalaryTracker() {
+        const descEl = document.getElementById('salary-tracker-desc');
+        const actionEl = document.getElementById('salary-tracker-action');
+        const dayTextEl = document.getElementById('salary-tracker-day-text');
+        const monthSelect = document.getElementById('salary-tracker-month-select');
+
+        if (!descEl || !actionEl) return;
+
+        if (!this.selectedSalaryMonth) {
+            this.selectedSalaryMonth = DataStore.getCurrentMonth();
+        }
+
+        // Ay seçeneklerini doldur
+        if (monthSelect) {
+            if (monthSelect.children.length === 0) {
+                const options = DataStore.getMonthOptions(6, 5);
+                monthSelect.innerHTML = options.map(o => `
+                    <option value="${o.value}" ${o.value === this.selectedSalaryMonth ? 'selected' : ''}>${o.label}</option>
+                `).join('');
+            } else {
+                monthSelect.value = this.selectedSalaryMonth;
+            }
+        }
+
+        const salarySettings = DataStore.getSalarySettings();
+        if (dayTextEl) dayTextEl.textContent = `Her ayın ${salarySettings.salaryDay}'i`;
+
+        const salaryTrx = DataStore.getSalaryTransactionForMonth(this.selectedSalaryMonth);
+        const monthName = DataStore.formatMonthName(this.selectedSalaryMonth);
+
+        if (salaryTrx) {
+            const acc = DataStore.data.accounts.find(a => a.id === salaryTrx.accountId);
+            const accName = acc ? acc.name : 'Banka Hesabı';
+            descEl.innerHTML = `
+                <span class="text-emerald-950 font-medium">
+                    ✓ <strong>${monthName} Maaşı Yattı:</strong> ${DataStore.formatDate(salaryTrx.date)} tarihinde <strong>${DataStore.formatCurrency(salaryTrx.amount)}</strong> ${accName} hesabınıza işlendi.
+                </span>
+            `;
+            actionEl.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Bu Ay Yattı
+                    </span>
+                    <button onclick="App.deleteTransaction('${salaryTrx.id}')" title="Bu ayın maaş kaydını geri al / sil" class="px-2.5 py-1.5 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 text-xs font-semibold transition-colors cursor-pointer">
+                        Geri Al
+                    </button>
+                </div>
+            `;
+        } else {
+            const now = new Date();
+            const [y, m] = this.selectedSalaryMonth.split('-').map(Number);
+            const targetDate = new Date(y, m - 1, salarySettings.salaryDay);
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const isPastOrToday = today >= targetDate;
+            const diffDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+
+            if (isPastOrToday) {
+                descEl.innerHTML = `
+                    <span class="text-amber-900 font-semibold flex items-center gap-1">
+                        <span>⚠️ <strong>${monthName}</strong> maaş ödeme günü geldi (${salarySettings.salaryDay} ${monthName.split(' ')[0]}). Henüz hesaba eklenmedi.</span>
+                    </span>
+                `;
+                actionEl.innerHTML = `
+                    <button onclick="App.processSalaryForSelectedMonth()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 cursor-pointer transition-all">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Maaşı Hesaba Yatır (${DataStore.formatCurrency(salarySettings.amount)})</span>
+                    </button>
+                `;
+            } else {
+                descEl.innerHTML = `
+                    <span class="text-slate-600">
+                        ⏳ <strong>${monthName}</strong> maaş gününe <strong>${diffDays} gün kaldı</strong> (${salarySettings.salaryDay} ${monthName.split(' ')[0]}).
+                    </span>
+                `;
+                actionEl.innerHTML = `
+                    <button onclick="App.processSalaryForSelectedMonth()" class="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-emerald-300 text-emerald-800 hover:text-emerald-950 rounded-xl text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all">
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i>
+                        <span>Erken Yattıysa Şimdi Ekle</span>
+                    </button>
+                `;
+            }
+        }
+
+        if (window.lucide) lucide.createIcons();
+    },
+
+    onSalaryMonthChange() {
+        const select = document.getElementById('salary-tracker-month-select');
+        if (select) {
+            this.selectedSalaryMonth = select.value;
+            this.renderSalaryTracker();
+        }
+    },
+
+    processSalaryForSelectedMonth() {
+        const month = this.selectedSalaryMonth || DataStore.getCurrentMonth();
+        const s = DataStore.getSalarySettings();
+        const monthName = DataStore.formatMonthName(month);
+
+        if (confirm(`${monthName} net maaşı (${DataStore.formatCurrency(s.amount)}) hesabınıza aktarılsın mı?`)) {
+            DataStore.recordSalaryForMonth(month);
+            this.renderAll();
+            this.showToast(`${monthName} maaşı başarıyla hesabınıza eklendi!`, 'success');
+        }
+    },
+
+    openSalaryDayModal() {
+        const salarySettings = DataStore.getSalarySettings();
+
+        // 1-31 Günleri
+        const daySelect = document.getElementById('modal-salary-day');
+        if (daySelect) {
+            daySelect.innerHTML = Array.from({ length: 31 }, (_, i) => i + 1).map(day => `
+                <option value="${day}" ${day === salarySettings.salaryDay ? 'selected' : ''}>
+                    Her ayın ${day}'i ${day === 15 ? '(Maaş Günü - Yaygın)' : (day === 1 ? '(Ay Başı)' : '')}
+                </option>
+            `).join('');
+        }
+
+        const amtInput = document.getElementById('modal-salary-amount');
+        if (amtInput) amtInput.value = salarySettings.amount;
+
+        const accSelect = document.getElementById('modal-salary-account');
+        if (accSelect) {
+            accSelect.innerHTML = DataStore.getActiveAccounts().map(a => `
+                <option value="${a.id}" ${a.id === salarySettings.accountId ? 'selected' : ''}>
+                    ${a.name} (${DataStore.formatCurrency(a.balance)})
+                </option>
+            `).join('');
+        }
+
+        this.openModal('modal-salary-settings');
+    },
+
+    saveSalarySettings(e) {
+        e.preventDefault();
+        const salaryDay = parseInt(document.getElementById('modal-salary-day').value) || 15;
+        const amount = parseFloat(document.getElementById('modal-salary-amount').value) || 65000;
+        const accountId = document.getElementById('modal-salary-account').value || 'acc-1';
+
+        DataStore.setSalarySettings({ salaryDay, amount, accountId });
+
+        this.closeModal('modal-salary-settings');
+        this.renderAll();
+        this.showToast(`Maaş ayarlarınız kaydedildi (Her ayın ${salaryDay}. günü).`, 'success');
     },
 
     // ================= 2. TÜM HAREKETLER =================
@@ -270,6 +423,7 @@ const App = {
         if (presetCategory) {
             document.getElementById('trx-category').value = presetCategory;
         }
+        this.onTrxCategoryChange();
 
         if (editId) {
             const trx = DataStore.data.transactions.find(t => t.id === editId);
@@ -280,6 +434,7 @@ const App = {
                 document.getElementById('trx-date').value = trx.date;
                 document.getElementById('trx-account-id').value = trx.accountId;
                 document.getElementById('trx-category').value = trx.category;
+                this.onTrxCategoryChange();
                 document.getElementById('trx-description').value = trx.description || '';
                 document.getElementById('modal-transaction-title').textContent = 'İşlemi Düzenle';
                 document.getElementById('trx-submit-btn').textContent = 'Değişiklikleri Kaydet';
@@ -321,7 +476,59 @@ const App = {
             catSelect.innerHTML = DataStore.data.categories.expense.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
+        this.onTrxCategoryChange();
+
         if (window.lucide) lucide.createIcons();
+    },
+
+    onTrxCategoryChange() {
+        const catSelect = document.getElementById('trx-category');
+        const helper = document.getElementById('trx-salary-helper');
+        if (!catSelect || !helper) return;
+
+        if (catSelect.value === 'Aylık Maaş') {
+            helper.classList.remove('hidden');
+            const salarySettings = DataStore.getSalarySettings();
+            const noteEl = document.getElementById('trx-salary-day-note');
+            if (noteEl) noteEl.textContent = `Maaş Günü: Her ayın ${salarySettings.salaryDay}'i`;
+
+            const monthSelect = document.getElementById('trx-salary-month-select');
+            if (monthSelect) {
+                const options = DataStore.getMonthOptions(6, 5);
+                const currentMonth = DataStore.getCurrentMonth();
+                monthSelect.innerHTML = options.map(o => `
+                    <option value="${o.value}" ${o.value === currentMonth ? 'selected' : ''}>${o.label}</option>
+                `).join('');
+                this.onTrxSalaryMonthChange();
+            }
+        } else {
+            helper.classList.add('hidden');
+        }
+    },
+
+    onTrxSalaryMonthChange() {
+        const monthSelect = document.getElementById('trx-salary-month-select');
+        if (!monthSelect) return;
+        const selectedMonth = monthSelect.value;
+        const salarySettings = DataStore.getSalarySettings();
+
+        const [y, m] = selectedMonth.split('-').map(Number);
+        const maxDays = new Date(y, m, 0).getDate();
+        const day = Math.min(salarySettings.salaryDay, maxDays);
+        const dateStr = `${selectedMonth}-${String(day).padStart(2, '0')}`;
+
+        document.getElementById('trx-date').value = dateStr;
+        document.getElementById('trx-description').value = `${DataStore.formatMonthName(selectedMonth)} Net Maaş Ödemesi`;
+
+        const amtInput = document.getElementById('trx-amount');
+        if (!amtInput.value || parseFloat(amtInput.value) === 0) {
+            amtInput.value = salarySettings.amount;
+        }
+
+        const accSelect = document.getElementById('trx-account-id');
+        if (accSelect && salarySettings.accountId) {
+            accSelect.value = salarySettings.accountId;
+        }
     },
 
     saveTransaction(e) {
@@ -1279,6 +1486,24 @@ const App = {
         const salInput = document.getElementById('admin-salary-target');
         if (salInput) salInput.value = s.monthlySalaryTarget || 65000;
 
+        const salDaySelect = document.getElementById('admin-salary-day');
+        if (salDaySelect) {
+            salDaySelect.innerHTML = Array.from({ length: 31 }, (_, i) => i + 1).map(day => `
+                <option value="${day}" ${day === (s.salaryDay || 15) ? 'selected' : ''}>
+                    Her ayın ${day}'i ${day === 15 ? '(Yaygın)' : ''}
+                </option>
+            `).join('');
+        }
+
+        const salAccSelect = document.getElementById('admin-salary-account');
+        if (salAccSelect) {
+            salAccSelect.innerHTML = DataStore.getActiveAccounts().map(a => `
+                <option value="${a.id}" ${a.id === (s.salaryAccountId || 'acc-1') ? 'selected' : ''}>
+                    ${a.name}
+                </option>
+            `).join('');
+        }
+
         const accountsContainer = document.getElementById('admin-accounts-list');
         if (accountsContainer) {
             accountsContainer.innerHTML = DataStore.data.accounts.map(acc => {
@@ -1339,14 +1564,21 @@ const App = {
 
     saveAdminGeneral(e) {
         e.preventDefault();
-        DataStore.data.settings.userName = document.getElementById('admin-user-name').value;
-        DataStore.data.settings.currency = document.getElementById('admin-currency').value;
-        DataStore.data.settings.monthlySalaryTarget = parseFloat(document.getElementById('admin-salary-target').value) || 0;
+        const userName = document.getElementById('admin-user-name').value;
+        const currency = document.getElementById('admin-currency').value;
+        const amount = parseFloat(document.getElementById('admin-salary-target').value) || 0;
+        const salaryDay = parseInt(document.getElementById('admin-salary-day').value) || 15;
+        const salaryAccountId = document.getElementById('admin-salary-account').value || 'acc-1';
 
-        DataStore.save();
+        DataStore.data.settings.userName = userName;
+        DataStore.data.settings.currency = currency;
+
+        DataStore.setSalarySettings({ salaryDay, amount, accountId: salaryAccountId });
+
         this.updateUserDisplay();
         this.renderDashboard();
-        this.showToast('Sayfa başlıkları ve genel metinler güncellendi.', 'success');
+        this.renderSubscriptions();
+        this.showToast('Sayfa başlıkları ve maaş ayarları güncellendi.', 'success');
     },
 
     updateAccountBalance(accId) {
