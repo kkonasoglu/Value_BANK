@@ -23,3 +23,9 @@ $RECYCLE.BIN/
 output*.html
 test*.html
 real_output.html
+
+# Electron & Node Dependencies / Builds
+node_modules/
+dist/
+*.exe
+*.blockmap

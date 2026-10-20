@@ -100,11 +100,44 @@ Projeyi herkesin erişebileceği canlı bir web sitesi olarak yayınlamak için:
 
 ---
 
+## 🖥️ Windows Masaüstü Uygulaması (.exe) Olarak Çalıştırma & Derleme
+
+Proje artık Electron altyapısıyla bağımsız bir Windows masaüstü uygulaması olarak çalışabilir:
+
+### 1. Ön Hazırlık (Node.js)
+Bilgisayarınızda Node.js kurulu değilse PowerShell'de tek satırla kurabilirsiniz:
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
+*(Kurulum sonrası terminali yeniden başlatın).*
+
+### 2. Bağımlılıkları Yükleme
+```powershell
+npm install
+```
+
+### 3. Geliştirme Modunda Çalıştırma
+```powershell
+npm start
+```
+
+### 4. Tek Tıkla `.exe` Çıktısı Alma
+```powershell
+# Taşınabilir (kurulum gerektirmeyen tek parça .exe)
+npm run build:portable
+
+# Veya kurulum sihirbazlı (.exe setup)
+npm run build:installer
+```
+Oluşturulan `.exe` dosyası `dist/` klasörü altına kaydedilir.
+
+---
+
 ## 🛠️ Kullanılan Teknolojiler
 
 - **HTML5 & Vanilla JavaScript (ES6+):** Saf, hafif ve hızlı mimari.
-- **Tailwind CSS (CDN):** Modern, responsive ve şık UI bileşenleri.
-- **Lucide Icons:** Hızlı ve vektörel modern ikon kütüphanesi.
+- **Electron & electron-builder:** Windows masaüstü (.exe) desteği.
+- **Tailwind CSS & Lucide Icons (Offline / Yerel):** Çevrimdışı çalışan modern arayüz ve ikonlar.
 - **HTML5 LocalStorage:** Sıfır veritabanı maliyeti ve yerel veri saklama.
 
 ---
