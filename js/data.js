@@ -1,6 +1,6 @@
-// js/data.js - Kişisel Gelir, Gider, Maaş, Abonelik, Fon/Yatırım ve Alınacaklar Veri Modeli
+// js/data.js - Kişisel Gelir, Gider, Maaş, Abonelik, Kasa ve Alınacaklar Veri Modeli
 
-const STORAGE_KEY = 'kisisel_muhasebe_data_v4';
+const STORAGE_KEY = 'kisisel_muhasebe_data_v5';
 
 // Gerçekçi Başlangıç Verileri
 const INITIAL_DATA = {
@@ -9,14 +9,11 @@ const INITIAL_DATA = {
         monthlySalaryTarget: 65000,
         currency: "₺"
     },
-    // Hesaplar: Elimdeki harcanabilir aktif para (bank & cash) vs Ayrı tutulan Kasa / Yatırım (kasa, altin, fon)
+    // Hesaplar: Cebimdeki aktif para (bank & cash) ve Kasa (Acil Durum Parası)
     accounts: [
-        { id: "acc-1", name: "Maaş / Vadesiz Hesap", type: "bank", balance: 48500, iban: "Garanti BBVA" },
-        { id: "acc-2", name: "Nakit Cüzdan", type: "cash", balance: 3400, iban: "Nakit Para" },
-        // Kasa & Yatırım (Toplam paradan ayrı tutulur)
-        { id: "fund-kasa", name: "Kasa (Acil Durum Parası)", type: "kasa", balance: 25000, iban: "Evdeki / Güvence Kasası" },
-        { id: "fund-altin", name: "Altın Hesabı", type: "altin", balance: 45000, iban: "Gram & Çeyrek Altın" },
-        { id: "fund-fon", name: "Yatırım Fonu (TEFAS / Hisse)", type: "fon", balance: 50000, iban: "Portföy & Fon" }
+        { id: "acc-1", name: "Maaş / Vadesiz Banka", type: "bank", balance: 48500, iban: "Garanti BBVA" },
+        { id: "acc-2", name: "Cebimdeki Nakit", type: "cash", balance: 3400, iban: "Nakit Cüzdan" },
+        { id: "fund-kasa", name: "Kasa (Acil Durum Parası)", type: "kasa", balance: 25000, iban: "Acil Durum Birikimi" }
     ],
     categories: {
         income: [
@@ -24,7 +21,7 @@ const INITIAL_DATA = {
             "Prim & Bonus",
             "Ek İş / Freelance",
             "Kira / Pasif Gelir",
-            "Fondan Para Çekme (Bozdurma)",
+            "Kasadan Para Çekme (Acil Durum)",
             "Diğer Gelir"
         ],
         expense: [
@@ -33,7 +30,7 @@ const INITIAL_DATA = {
             "Faturalar (Elektrik, Su, Doğalgaz, İnternet)",
             "Ulaşım & Akaryakıt",
             "Dışarıda Yeme & İçme",
-            "Fona / Kasaya Para Aktarma (Yatırım)",
+            "Kasaya Para Aktarma (Birikim)",
             "Kredi & Kredi Kartı Ödemesi",
             "Sağlık & Kişisel Bakım",
             "Giyim & Alışveriş",
@@ -284,6 +281,8 @@ const DataStore = {
                 if (!this.data.subscriptions) this.data.subscriptions = JSON.parse(JSON.stringify(INITIAL_DATA.subscriptions));
                 if (!this.data.wishlist) this.data.wishlist = JSON.parse(JSON.stringify(INITIAL_DATA.wishlist));
                 if (!this.data.accounts) this.data.accounts = JSON.parse(JSON.stringify(INITIAL_DATA.accounts));
+                // Eski fon hesaplarını (fund-altin, fund-fon) temizle
+                this.data.accounts = this.data.accounts.filter(a => a.type !== 'altin' && a.type !== 'fon' && a.id !== 'fund-altin' && a.id !== 'fund-fon');
                 this.save();
             } catch (e) {
                 console.error("Kayıtlı veri okunamadı, varsayılana dönülüyor:", e);
@@ -311,11 +310,9 @@ const DataStore = {
         this.data = {
             settings: { ...INITIAL_DATA.settings },
             accounts: [
-                { id: "acc-1", name: "Maaş / Vadesiz Hesap", type: "bank", balance: 0, iban: "" },
-                { id: "acc-2", name: "Nakit Cüzdan", type: "cash", balance: 0, iban: "" },
-                { id: "fund-kasa", name: "Kasa (Acil Durum Parası)", type: "kasa", balance: 0, iban: "" },
-                { id: "fund-altin", name: "Altın Hesabı", type: "altin", balance: 0, iban: "" },
-                { id: "fund-fon", name: "Yatırım Fonu", type: "fon", balance: 0, iban: "" }
+                { id: "acc-1", name: "Maaş / Vadesiz Banka", type: "bank", balance: 0, iban: "" },
+                { id: "acc-2", name: "Cebimdeki Nakit", type: "cash", balance: 0, iban: "" },
+                { id: "fund-kasa", name: "Kasa (Acil Durum Parası)", type: "kasa", balance: 0, iban: "" }
             ],
             categories: { ...INITIAL_DATA.categories },
             subscriptions: [],
@@ -384,31 +381,35 @@ const DataStore = {
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     },
 
-    // Kasa / Yatırım Hesaplarını Getir
-    getFundAccounts() {
-        return (this.data.accounts || []).filter(a => ['kasa', 'altin', 'fon', 'emergency', 'savings'].includes(a.type));
+    // Kasa Hesabını Getir
+    getKasaAccount() {
+        return (this.data.accounts || []).find(a => a.type === 'kasa' || a.type === 'emergency' || a.id === 'fund-kasa') || {
+            id: "fund-kasa",
+            name: "Kasa (Acil Durum Parası)",
+            type: "kasa",
+            balance: 0
+        };
     },
 
-    // Elimdeki Aktif Para Hesaplarını Getir (Vadesiz banka & nakit cüzdan)
+    // Cebimdeki Aktif Para Hesaplarını Getir (Vadesiz banka & nakit cüzdan)
     getActiveAccounts() {
         return (this.data.accounts || []).filter(a => ['bank', 'cash'].includes(a.type));
     },
 
-    // Ana Sayfa Metrikleri (Elimdeki Para ile Kasa/Fon ayrı tutulur)
+    // Ana Sayfa Metrikleri:
+    // 1. Cebimdeki Para
+    // 2. Toplam Gider
+    // 3. Abonelik Giderleri
+    // 4. Alınacaklar (Bu Ay)
+    // 5. Kasa (Acil Durum Parası)
     getMainMetrics() {
-        // 1. TOPLAM PARA = Sadece elimdeki kullanılabilir aktif para (Maaş & Cüzdan)
-        // Kasa/Yatırım kutusu bu hesaptan AYRI tutulur!
+        // 1. CEBİMDEKİ PARA: Sadece harcanabilir vadesiz banka + nakit cüzdan
         const activeAccounts = this.getActiveAccounts();
         const availableMoney = activeAccounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
 
-        // 2. KASA & YATIRIM KUTUSU = Kasa + Altın + Fon toplamı (Ayrı güvence hesabı)
-        const fundAccounts = this.getFundAccounts();
-        const totalFunds = fundAccounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
-
-        // Ayrı ayrı Kasa, Altın, Fon bakiyeleri
-        const kasaBal = fundAccounts.filter(a => a.type === 'kasa' || a.name.toLowerCase().includes('kasa')).reduce((s, a) => s + (Number(a.balance) || 0), 0);
-        const altinBal = fundAccounts.filter(a => a.type === 'altin' || a.name.toLowerCase().includes('altın')).reduce((s, a) => s + (Number(a.balance) || 0), 0);
-        const fonBal = fundAccounts.filter(a => a.type === 'fon' || a.name.toLowerCase().includes('fon')).reduce((s, a) => s + (Number(a.balance) || 0), 0);
+        // 2. KASA (Acil Durum Parası): Cebimden ayrılan güvence
+        const kasaAcc = this.getKasaAccount();
+        const kasaMoney = Number(kasaAcc.balance) || 0;
 
         // 3. Bu Ayki Toplam Gelir ve Toplam Gider
         const currentMonth = this.getCurrentMonth();
@@ -437,13 +438,10 @@ const DataStore = {
         const allPendingWishlistTotal = allPendingWishlist.reduce((sum, w) => sum + (Number(w.estimatedPrice) || 0), 0);
 
         return {
-            availableMoney, // ELİMDEKİ PARA (Kasa/Yatırım Hariç)
-            totalFunds,     // KASA & YATIRIM TOPLAMI
-            kasaBal,
-            altinBal,
-            fonBal,
-            monthExpense,
-            monthIncome,
+            availableMoney, // CEBİMDEKİ PARA
+            kasaMoney,      // KASA BAKİYESİ
+            monthExpense,   // TOPLAM GİDER
+            monthIncome,    // TOPLAM GELİR
             subscriptionExpenseTotal,
             subscriptionIncomeTotal,
             thisMonthWishlistTotal,

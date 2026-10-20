@@ -1,38 +1,34 @@
-# 💰 GelirGiderim - Sade Kişisel Bütçe, Fon & Ön Muhasebe
+# 💰 GelirGiderim - Sade Kişisel Bütçe & Kasa Takibi
 
-Kişisel bütçenizi, harcanabilir aktif paranızı, aylık maaşınızı, birikimlerinizi (**Kasa, Altın, Fon**), düzenli aboneliklerinizi ve aylık alışveriş hedeflerinizi sade bir arayüzle takip etmenizi sağlayan modern bir web uygulamasıdır.
+Kişisel bütçenizi, cebinizdeki harcanabilir aktif paranızı, aylık maaşınızı, acil durum kasanızı, düzenli aboneliklerinizi ve aylık alışveriş hedeflerinizi sade bir arayüzle takip etmenizi sağlayan modern bir web uygulamasıdır.
 
-Şirket muhasebeleri, karmaşık cariler veya faturalar yerine **yalnızca siz, maaşınız, harcamalarınız ve birikimleriniz** üzerine tasarlanmıştır.
+Şirket muhasebeleri, karmaşık cariler veya faturalar yerine **yalnızca siz, cebinizdeki para, maaşınız, harcamalarınız ve kasanız** üzerine tasarlanmıştır.
 
 ---
 
 ## ✨ Öne Çıkan Özellikler
 
 ### 1. 📊 Sade ve Odaklanmış Ana Sayfa (Dashboard)
-- **Kutu 1 • Toplam Para (Elimdeki Para):** Sadece harcanabilir aktif nakit ve vadesiz banka hesaplarınızı gösterir. Birikim ve kasa havuzundan ayrı tutulur.
-- **Kutu 2 • Toplam Gider:** İçinde bulunulan ay yapılan toplam harcamalar.
-- **Kutu 3 • Abonelik Giderleri:** Aylık düzenli taahhüt ve sabit gider toplamı.
-- **Kutu 4 • Bu Ay Alınacaklar:** O ay için planlanan alışveriş hedeflerinin tahmini gider bütçesi.
-- **Kutu 5 • Kasa & Yatırım:** Harcanabilir paradan bağımsız tutulan güvence havuzu (**Kasa + Altın + Fon** toplamı).
-- **Hızlı Aksiyon Butonları:** `+ Gelir Ekle (Maaş vb.)` ve `- Gider Ekle (Harcama)`.
-- **Son 7 İşlem:** En son yapılan hareketlerin anlık özet tablosu.
+- **Kutu 1 • Cebimdeki Para:** Sadece harcanabilir aktif nakit ve vadesiz banka hesaplarınızın toplamıdır. Kasadaki paradan ayrı tutulur.
+- **Kutu 2 • Toplam Gider:** İçinde bulunulan ay yapılan toplam harcamalarınız.
+- **Kutu 3 • Abonelik Giderleri:** Aylık düzenli taahhüt ve sabit giderlerinizin toplamı.
+- **Kutu 4 • Alınacaklar (Tahmini Gider):** O ay için planladığınız alışveriş ve harcama hedeflerinizin tahmini bütçesi.
+- **Kutu 5 • Kasa (Acil Durum Parası) + "Aktar" Butonu:** Cebinizden kenara ayırdığınız acil durum güvence paranız. Doğrudan kutunun üzerindeki **Aktar** butonuyla tek tıkla cebinizden kasaya para aktarabilir veya ihtiyaç halinde kasadan cebinize çekebilirsiniz.
+- **Hızlı İşlem Butonları:** `+ Gelir Ekle` ve `- Gider Ekle`.
+- **Son 7 İşlem:** En son yaptığınız harcama ve aktarımların anlık tablosu.
 
 ---
 
-### 2. 🪙 Fon & Yatırım Yönetimi (Kasa, Altın, Fon)
-- **3 Ayrı Birikim Kutusu:**
-  1. **Kasa (Acil Durum Parası):** Maaştan kenara ayrılan güvence nakdi.
-  2. **Altın Hesabı:** Gram, çeyrek altın ve kıymetli maden birikimleri.
-  3. **Yatırım Fonu (TEFAS / Hisse):** Portföy ve büyüme odaklı fon yatırımları.
-- **Para Yükle (Yatırım Yap):** Elimdeki aktif paradan düşer, seçilen Fon/Kasa kutusuna aktarılır.
-- **Para Çek (Bozdur):** Fon/Kasa kutusundan düşer, elimdeki aktif paraya geçer ve **Toplam Gelir** hanenize eklenir.
-- **Fon Hareket Geçmişi:** Tüm yükleme ve bozdurma hareketlerinin dökümü ve geri alma (silme) desteği.
+### 2. 🛡️ Kasa & Hızlı Para Aktarımı
+- **Kasanın Yanındaki "Aktar" Butonu:**
+  - **Cebimden ➔ Kasaya Aktar (Birikim):** Cebinizdeki harcanabilir hesaptan belirlediğiniz tutar düşer, Kasa bakiyesine eklenir. Hızlı seçim butonları (+1.000 ₺, +2.500 ₺, +5.000 ₺, +10.000 ₺) mevcuttur.
+  - **Kasadan ➔ Cebime Aktar (İhtiyaç):** Kasanızdan para çekilir, harcanabilir aktif hesabınıza aktarılır ve gelir hanenize eklenir.
 
 ---
 
 ### 3. 🔁 Abonelikler & Düzenli Gelir/Gider Sistemi
 - **Hem Gelir Hem Gider Desteği:**
-  - **Düzenli Gelir:** Aylık Net Maaş, kira geliri vb.
+  - **Düzenli Gelir:** Aylık Net Maaş, yan gelir vb.
   - **Düzenli Gider:** Netflix, Spotify, Ev İnterneti, spor salonu vb.
 - **Günü Geldiğinde Otomatik/Tek Tıkla İşleme:** Günü gelen işlemler tek tıkla gelir veya harcamalara işlenir ve ilgili hesap bakiyesi güncellenir.
 - **Durum Takibi:** "Bu Ay Yattı / Ödendi", "Günü Geldi / Bekliyor", "X gün kaldı" rozetleri.
@@ -48,11 +44,11 @@ Kişisel bütçenizi, harcanabilir aktif paranızı, aylık maaşınızı, birik
 
 ---
 
-### 5. 🛡️ Yönetici (Admin) Paneli
+### 5. ⚙️ Yönetici (Admin) Paneli
 - **Başlık ve Metin Düzenleme:** Kullanıcı adı, bütçe başlığı ve para birimi özelleştirme.
-- **Doğrudan Bakiye Düzenleme:** Kasa, Altın, Fon ve banka hesap bakiyelerini doğrudan değiştirme.
+- **Doğrudan Bakiye Düzenleme:** Banka, nakit ve kasa bakiyelerini doğrudan panelden değiştirebilme.
 - **Kategori Yönetimi:** Gelir ve Gider kategorilerini ekleme ve çıkarma.
-- **JSON Veri Yedekleme & Geri Yükleme:** Tüm verilerinizi tek tıkla `.json` dosyası olarak bilgisayarınıza indirme veya yükleme.
+- **JSON Veri Yedekleme & Geri Yükleme:** Tüm verilerinizi tek tıkla `.json` dosyası olarak bilgisayarınıza indirme veya geri yükleme.
 
 ---
 

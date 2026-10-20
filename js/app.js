@@ -18,7 +18,6 @@ const App = {
         this.renderTransactions();
         this.renderSubscriptions();
         this.renderWishlist();
-        this.renderFunds();
         this.renderAccounts();
         this.renderAdmin();
         this.updateUserDisplay();
@@ -73,8 +72,7 @@ const App = {
             transactions: { title: "Tüm Hareketler", sub: "Maaş girişleriniz ve yaptığınız harcamaların dökümü" },
             subscriptions: { title: "Aboneliklerim", sub: "Her ay otomatik ve düzenli kesilen sabit ödemeleriniz" },
             wishlist: { title: "Alınacaklar", sub: "Aylık alışveriş hedefleriniz, tahmini giderler ve satın alma takibi" },
-            funds: { title: "Fon & Yatırım", sub: "Kasa, Altın ve Fon varlıklarınız ve birikim hareketleriniz" },
-            accounts: { title: "Hesaplarım & Kasa", sub: "Banka hesaplarınız ve nakit cüzdanınız" },
+            accounts: { title: "Hesaplarım & Kasa", sub: "Banka hesaplarınız, nakit cüzdanınız ve acil durum kasanız" },
             admin: { title: "Admin Paneli", sub: "Tüm sayfa içeriklerini, hesap bakiyelerini ve kategorileri yönetin" }
         };
 
@@ -88,8 +86,6 @@ const App = {
             this.renderSubscriptions();
         } else if (tabId === 'wishlist') {
             this.renderWishlist();
-        } else if (tabId === 'funds') {
-            this.renderFunds();
         } else if (tabId === 'accounts') {
             this.renderAccounts();
         } else if (tabId === 'admin') {
@@ -113,13 +109,6 @@ const App = {
             const currentMonth = DataStore.getCurrentMonth();
             const count = (DataStore.data.wishlist || []).filter(w => w.targetMonth === currentMonth && w.status === 'pending').length;
             navWishlistCount.textContent = count;
-        }
-
-        // Fon & Yatırım rozeti (Kasa + Altın + Fon toplam değeri)
-        const navFundsBadge = document.getElementById('nav-funds-badge');
-        if (navFundsBadge) {
-            const metrics = DataStore.getMainMetrics();
-            navFundsBadge.textContent = DataStore.formatCurrency(metrics.totalFunds);
         }
     },
 
@@ -149,9 +138,9 @@ const App = {
             elWishlistSub.textContent = `${DataStore.formatMonthName(metrics.currentMonth)} • ${metrics.thisMonthPendingCount} ürün bekliyor`;
         }
 
-        // KUTU 5: KASA & YATIRIM (Kasa + Altın + Fon Toplamı - Harcanabilir paradan ayrı tutulur)
+        // KUTU 5: KASA (ACİL DURUM PARASI - Harcanabilir paradan ayrı tutulur)
         const elEmergency = document.getElementById('box-emergency-money');
-        if (elEmergency) elEmergency.textContent = DataStore.formatCurrency(metrics.totalFunds);
+        if (elEmergency) elEmergency.textContent = DataStore.formatCurrency(metrics.kasaMoney);
 
         // SON 7 İŞLEM TABLOSU
         const recentTrx = [...DataStore.data.transactions]
@@ -411,17 +400,25 @@ const App = {
         if (!trx) return;
 
         if (confirm(`Bu işlemi silmek istediğinizden emin misiniz? (İlgili hesap bakiyeleri geri alınacaktır)`)) {
-            if (trx.targetFundId) {
-                // Para yükleme işlemiydi: Fondan düş, aktif hesaba iade et
+            const kasaAcc = DataStore.getKasaAccount();
+            const activeAcc = DataStore.data.accounts.find(a => a.id === trx.accountId);
+
+            if (trx.targetKasa) {
+                // Cebimden Kasaya aktarılmıştı: Kasadan düş, cebe iade et
+                if (kasaAcc) kasaAcc.balance -= trx.amount;
+                if (activeAcc) activeAcc.balance += trx.amount;
+            } else if (trx.fromKasa) {
+                // Kasadan Cebe çekilmişti: Kasaya iade et, cepten düş
+                if (kasaAcc) kasaAcc.balance += trx.amount;
+                if (activeAcc) activeAcc.balance -= trx.amount;
+            } else if (trx.targetFundId) {
+                // Eski fon uyumluluğu
                 const fundAcc = DataStore.data.accounts.find(a => a.id === trx.targetFundId);
                 if (fundAcc) fundAcc.balance -= trx.amount;
-                const activeAcc = DataStore.data.accounts.find(a => a.id === trx.accountId);
                 if (activeAcc) activeAcc.balance += trx.amount;
             } else if (trx.sourceFundId) {
-                // Para çekme (bozdurma) işlemiydi: Fona geri ekle, aktif hesaptan düş
                 const fundAcc = DataStore.data.accounts.find(a => a.id === trx.sourceFundId);
                 if (fundAcc) fundAcc.balance += trx.amount;
-                const activeAcc = DataStore.data.accounts.find(a => a.id === trx.accountId);
                 if (activeAcc) activeAcc.balance -= trx.amount;
             } else {
                 const acc = DataStore.data.accounts.find(a => a.id === trx.accountId);
@@ -1050,220 +1047,146 @@ const App = {
     },
 
     // ================= 5. FON & YATIRIM (KASA, ALTIN, FON) =================
-    renderFunds() {
-        const metrics = DataStore.getMainMetrics();
+    // ================= 5. KASA & AKTARIM (ACİL DURUM GÜVENCESİ) =================
+    openTransferToKasaModal(direction = 'to_kasa') {
+        const form = document.getElementById('kasa-transfer-form');
+        if (form) form.reset();
 
-        // Üst Özet Kartı
-        const totalValEl = document.getElementById('funds-total-value');
-        if (totalValEl) totalValEl.textContent = DataStore.formatCurrency(metrics.totalFunds);
-
-        // 3 Ana Kutu Bakiyeleri
-        const kasaBalEl = document.getElementById('fund-bal-kasa');
-        if (kasaBalEl) kasaBalEl.textContent = DataStore.formatCurrency(metrics.kasaBal);
-
-        const altinBalEl = document.getElementById('fund-bal-altin');
-        if (altinBalEl) altinBalEl.textContent = DataStore.formatCurrency(metrics.altinBal);
-
-        const fonBalEl = document.getElementById('fund-bal-fon');
-        if (fonBalEl) fonBalEl.textContent = DataStore.formatCurrency(metrics.fonBal);
-
-        // Fon & Yatırım İşlem Geçmişi Tablosu
-        const tbody = document.getElementById('funds-history-tbody');
-        if (!tbody) return;
-
-        const fundAccounts = DataStore.getFundAccounts();
-        const fundAccountIds = fundAccounts.map(a => a.id);
-
-        const fundTrx = DataStore.data.transactions.filter(t => {
-            if (t.targetFundId || t.sourceFundId) return true;
-            if (fundAccountIds.includes(t.accountId)) return true;
-            if (t.category && (
-                t.category.includes('Fon') ||
-                t.category.includes('Kasa') ||
-                t.category.includes('Altın') ||
-                t.category.includes('Yatırım')
-            )) return true;
-            return false;
-        });
-
-        if (fundTrx.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">Henüz bir fon ya da kasa hareketi (yükleme / bozdurma) yapılmadı.</td></tr>`;
-            return;
-        }
-
-        fundTrx.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        tbody.innerHTML = fundTrx.map(trx => {
-            const isWithdraw = trx.sourceFundId || trx.type === 'income'; // Bozdurma / Çekim
-            
-            // Fon hesabı
-            let fundAcc = null;
-            if (trx.targetFundId) fundAcc = DataStore.data.accounts.find(a => a.id === trx.targetFundId);
-            else if (trx.sourceFundId) fundAcc = DataStore.data.accounts.find(a => a.id === trx.sourceFundId);
-            else if (fundAccountIds.includes(trx.accountId)) fundAcc = DataStore.data.accounts.find(a => a.id === trx.accountId);
-
-            // Aktif hesap
-            let activeAcc = null;
-            if (trx.targetFundId || trx.sourceFundId) {
-                activeAcc = DataStore.data.accounts.find(a => a.id === trx.accountId);
-            }
-
-            const fundName = fundAcc ? fundAcc.name : (trx.category || 'Fon Hesabı');
-            const activeAccName = activeAcc ? activeAcc.name : 'Harcanabilir Bütçe';
-
-            return `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${DataStore.formatDate(trx.date)}</td>
-                    <td class="py-3 px-4">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase flex items-center gap-1 w-max ${isWithdraw ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'}">
-                            <i data-lucide="${isWithdraw ? 'arrow-up-right' : 'arrow-down-left'}" class="w-3 h-3"></i>
-                            ${isWithdraw ? 'Para Çekildi (Bozuldu)' : 'Para Yüklendi (Yatırım)'}
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 font-bold text-slate-800">${fundName}</td>
-                    <td class="py-3 px-4 text-slate-600">${activeAccName}</td>
-                    <td class="py-3 px-4 text-slate-600 max-w-xs truncate">${trx.description || '-'}</td>
-                    <td class="py-3 px-4 text-right font-extrabold ${isWithdraw ? 'text-amber-600' : 'text-emerald-600'}">
-                        ${isWithdraw ? '-' : '+'}${DataStore.formatCurrency(trx.amount)}
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <button onclick="App.deleteTransaction('${trx.id}')" title="İşlemi İptal Et & Sil" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
-        if (window.lucide) lucide.createIcons();
-    },
-
-    openFundTransferModal(actionType = 'deposit', targetFundId = null) {
-        document.getElementById('fund-transfer-form').reset();
-
-        // Kasa/Fon kutuları
-        const targetSelect = document.getElementById('fund-target-id');
-        const fundAccounts = DataStore.getFundAccounts();
-        targetSelect.innerHTML = fundAccounts.map(f => `
-            <option value="${f.id}" ${targetFundId === f.id ? 'selected' : ''}>${f.name} (${DataStore.formatCurrency(f.balance)})</option>
-        `).join('');
-
-        // Aktif hesaplar (Elimdeki Para)
-        const sourceSelect = document.getElementById('fund-source-id');
+        // Cebimdeki Aktif Hesaplar (Nakit & Vadesiz Banka)
+        const pocketSelect = document.getElementById('kasa-pocket-account-id');
         const activeAccounts = DataStore.getActiveAccounts();
-        sourceSelect.innerHTML = activeAccounts.map(a => `
-            <option value="${a.id}">${a.name} (${DataStore.formatCurrency(a.balance)})</option>
-        `).join('');
+        if (pocketSelect) {
+            pocketSelect.innerHTML = activeAccounts.map(a => `
+                <option value="${a.id}">${a.name} (${DataStore.formatCurrency(a.balance)})</option>
+            `).join('');
+        }
 
-        document.getElementById('fund-action-type').value = actionType;
-        document.getElementById('fund-date').value = new Date().toISOString().split('T')[0];
+        const dirSelect = document.getElementById('kasa-transfer-direction');
+        if (dirSelect) dirSelect.value = direction;
 
-        this.onFundActionTypeChange();
-        this.openModal('modal-fund-transfer');
+        const dateInput = document.getElementById('kasa-transfer-date');
+        if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+        this.onKasaDirectionChange();
+        this.openModal('modal-kasa-transfer');
     },
 
-    onFundActionTypeChange() {
-        const actionType = document.getElementById('fund-action-type').value;
-        const titleEl = document.getElementById('modal-fund-title');
-        const iconEl = document.getElementById('modal-fund-icon');
-        const submitBtn = document.getElementById('fund-submit-btn');
-        const targetLabel = document.getElementById('label-fund-target');
-        const sourceLabel = document.getElementById('label-fund-source');
-        const infoBox = document.getElementById('fund-info-box');
+    setKasaQuickAmount(amt) {
+        const input = document.getElementById('kasa-transfer-amount');
+        if (input) {
+            input.value = amt;
+            input.focus();
+        }
+    },
 
-        if (actionType === 'deposit') {
-            titleEl.textContent = 'Fona / Kasaya Para Yükle (Yatırım Yap)';
-            iconEl.className = 'w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center';
-            iconEl.innerHTML = '<i data-lucide="arrow-down-left" class="w-4 h-4"></i>';
-            targetLabel.textContent = 'Yüklenecek Fon / Kutu *';
-            sourceLabel.textContent = 'Çekilecek Elimdeki Aktif Hesap *';
-            submitBtn.className = 'px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold shadow-sm transition-all';
-            submitBtn.textContent = 'Parayı Yükle / Aktar';
-            infoBox.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-[11px] leading-relaxed';
-            infoBox.innerHTML = '<strong>Bilgi:</strong> Çekilen tutar <u>Elimdeki Para</u> hesabınızdan düşer ve seçtiğiniz <u>Kasa/Yatırım</u> kutusuna eklenir. Toplam Para (harcanabilir nakit) hesabından ayrı tutulur.';
+    onKasaDirectionChange() {
+        const dirEl = document.getElementById('kasa-transfer-direction');
+        const direction = dirEl ? dirEl.value : 'to_kasa';
+        const titleEl = document.getElementById('modal-kasa-title');
+        const submitBtn = document.getElementById('kasa-transfer-submit-btn');
+        const pocketLabel = document.getElementById('label-kasa-pocket-acc');
+        const infoBox = document.getElementById('kasa-info-box');
+
+        if (direction === 'to_kasa') {
+            if (titleEl) titleEl.textContent = 'Kasaya Para Aktar (Cebimden)';
+            if (pocketLabel) pocketLabel.textContent = 'Paranın Çekileceği Cebimdeki Hesap *';
+            if (submitBtn) {
+                submitBtn.className = 'px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold shadow-sm transition-all';
+                submitBtn.textContent = 'Kasaya Aktar (Kenara Ayır)';
+            }
+            if (infoBox) {
+                infoBox.className = 'p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-[11px] leading-relaxed';
+                infoBox.innerHTML = '<strong>Bilgi:</strong> Belirlediğiniz tutar cebinizdeki harcanabilir paradan düşecek ve <strong>Kasa (Acil Durum Parası)</strong> hesabınıza eklenecektir.';
+            }
         } else {
-            titleEl.textContent = 'Fondan / Kasadan Para Çek (Bozdur)';
-            iconEl.className = 'w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center';
-            iconEl.innerHTML = '<i data-lucide="arrow-up-right" class="w-4 h-4"></i>';
-            targetLabel.textContent = 'Çekilecek Fon / Kutu *';
-            sourceLabel.textContent = 'Yatırılacak Elimdeki Aktif Hesap *';
-            submitBtn.className = 'px-5 py-2 bg-amber-600 hover:bg-amber-700 text-slate-950 font-bold rounded-lg shadow-sm transition-all';
-            submitBtn.textContent = 'Bozdur & Gelire Ekle';
-            infoBox.className = 'p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-[11px] leading-relaxed';
-            infoBox.innerHTML = '<strong>Bilgi:</strong> Çekilen tutar <u>Kasa/Yatırım</u> kutunuzdan düşer, <u>Elimdeki Para</u> hesabınıza aktarılır VE <u>Toplam Gelir</u> hanenize eklenir.';
+            if (titleEl) titleEl.textContent = 'Kasadan Para Çek (Cebime Aktar)';
+            if (pocketLabel) pocketLabel.textContent = 'Paranın Yatırılacağı Cebimdeki Hesap *';
+            if (submitBtn) {
+                submitBtn.className = 'px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-sm transition-all';
+                submitBtn.textContent = 'Cebime Aktar (İhtiyaç)';
+            }
+            if (infoBox) {
+                infoBox.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-[11px] leading-relaxed';
+                infoBox.innerHTML = '<strong>Bilgi:</strong> <strong>Kasa (Acil Durum)</strong> hesabınızdan para çekilir, harcanabilir <u>Cebimdeki Para</u> hesabınıza aktarılır ve Toplam Gelir hanesine eklenir.';
+            }
         }
 
         if (window.lucide) lucide.createIcons();
     },
 
-    saveFundTransfer(e) {
+    saveKasaTransfer(e) {
         e.preventDefault();
-        const actionType = document.getElementById('fund-action-type').value;
-        const fundId = document.getElementById('fund-target-id').value;
-        const activeAccId = document.getElementById('fund-source-id').value;
-        const amount = parseFloat(document.getElementById('fund-amount').value) || 0;
-        const date = document.getElementById('fund-date').value;
-        const note = document.getElementById('fund-note').value.trim();
+        const direction = document.getElementById('kasa-transfer-direction').value;
+        const pocketAccId = document.getElementById('kasa-pocket-account-id').value;
+        const amount = parseFloat(document.getElementById('kasa-transfer-amount').value) || 0;
+        const date = document.getElementById('kasa-transfer-date').value;
+        const note = document.getElementById('kasa-transfer-note').value.trim();
 
         if (amount <= 0) {
-            alert('Lütfen geçerli bir tutar girin.');
+            alert('Lütfen geçerli bir aktarım tutarı girin.');
             return;
         }
 
-        const fundAcc = DataStore.data.accounts.find(a => a.id === fundId);
-        const activeAcc = DataStore.data.accounts.find(a => a.id === activeAccId);
+        const pocketAcc = DataStore.data.accounts.find(a => a.id === pocketAccId);
+        const kasaAcc = DataStore.getKasaAccount();
 
-        if (!fundAcc || !activeAcc) {
-            alert('Lütfen geçerli hesapları seçin.');
+        if (!pocketAcc || !kasaAcc) {
+            alert('Hesap bilgisi bulunamadı.');
             return;
         }
 
-        if (actionType === 'deposit') {
-            // YÜKLEME: Bendeki para azalır, Kasa/Fon kutusu artar.
-            activeAcc.balance -= amount;
-            fundAcc.balance += amount;
+        if (direction === 'to_kasa') {
+            // CEBİMDEN KASAYA AKTAR
+            if (pocketAcc.balance < amount) {
+                if (!confirm(`Seçtiğiniz hesapta (${pocketAcc.name}) yeterli bakiye görünmüyor (${DataStore.formatCurrency(pocketAcc.balance)}). Yine de aktarılsın mı?`)) {
+                    return;
+                }
+            }
+
+            pocketAcc.balance -= amount;
+            kasaAcc.balance += amount;
 
             const newTrx = {
                 id: DataStore.generateId('trx'),
                 date,
                 type: 'expense',
-                accountId: activeAcc.id,
-                category: 'Fona / Kasaya Para Aktarma (Yatırım)',
+                accountId: pocketAcc.id,
+                category: 'Kasaya Para Aktarma (Birikim)',
                 amount,
-                targetFundId: fundAcc.id,
-                description: note ? `Yatırım Aktarımı: ${note}` : `Yatırım: ${activeAcc.name} ➔ ${fundAcc.name}`
+                targetKasa: true,
+                description: note ? `Kasaya Aktarım: ${note}` : `Kasaya Aktarım: ${pocketAcc.name} ➔ Kasa (Acil Durum)`
             };
 
             DataStore.data.transactions.unshift(newTrx);
-            this.showToast(`${DataStore.formatCurrency(amount)} başarıyla ${fundAcc.name} kutusuna aktarıldı.`, 'success');
+            this.showToast(`${DataStore.formatCurrency(amount)} başarıyla Kasaya aktarıldı.`, 'success');
         } else {
-            // ÇEKME: Kasa/Fon kutusu azalır, bendeki para artar VE Toplam Gelir artar!
-            if (fundAcc.balance < amount) {
-                if (!confirm(`Seçilen fonda (${fundAcc.name}) yeterli bakiye görünmüyor (${DataStore.formatCurrency(fundAcc.balance)}). Yine de işleme devam edilsin mi?`)) {
+            // KASADAN CEBİME AKTAR
+            if (kasaAcc.balance < amount) {
+                if (!confirm(`Kasada yeterli bakiye görünmüyor (${DataStore.formatCurrency(kasaAcc.balance)}). Yine de aktarılsın mı?`)) {
                     return;
                 }
             }
 
-            fundAcc.balance -= amount;
-            activeAcc.balance += amount;
+            kasaAcc.balance -= amount;
+            pocketAcc.balance += amount;
 
             const newTrx = {
                 id: DataStore.generateId('trx'),
                 date,
                 type: 'income',
-                accountId: activeAcc.id,
-                category: 'Fondan Para Çekme (Bozdurma)',
+                accountId: pocketAcc.id,
+                category: 'Kasadan Para Çekme (Acil Durum)',
                 amount,
-                sourceFundId: fundAcc.id,
-                description: note ? `Fondan Çekim: ${note}` : `Fondan Çekim: ${fundAcc.name} ➔ ${activeAcc.name}`
+                fromKasa: true,
+                description: note ? `Kasadan Çekim: ${note}` : `Kasadan Çekim: Kasa ➔ ${pocketAcc.name}`
             };
 
             DataStore.data.transactions.unshift(newTrx);
-            this.showToast(`${DataStore.formatCurrency(amount)} bozduruldu, ${activeAcc.name} hesabına ve Toplam Gelir hanesine eklendi!`, 'success');
+            this.showToast(`${DataStore.formatCurrency(amount)} kasadan çekilerek ${pocketAcc.name} hesabınıza aktarıldı.`, 'success');
         }
 
         DataStore.save();
-        this.closeModal('modal-fund-transfer');
+        this.closeModal('modal-kasa-transfer');
         this.renderAll();
     },
 
@@ -1281,22 +1204,14 @@ const App = {
                 icon = 'shield-alert';
                 colorClass = 'bg-amber-50 text-amber-600';
                 typeLabel = 'Kasa (Acil Durum Parası)';
-            } else if (acc.type === 'altin') {
-                icon = 'award';
-                colorClass = 'bg-yellow-50 text-yellow-600';
-                typeLabel = 'Altın Hesabı';
-            } else if (acc.type === 'fon') {
-                icon = 'trending-up';
-                colorClass = 'bg-indigo-50 text-indigo-600';
-                typeLabel = 'Yatırım Fonu (Hisse/Portföy)';
             } else if (acc.type === 'cash') {
                 icon = 'banknote';
                 colorClass = 'bg-emerald-50 text-emerald-600';
                 typeLabel = 'Nakit Cüzdan';
-            } else if (acc.type === 'savings') {
-                icon = 'piggy-bank';
-                colorClass = 'bg-purple-50 text-purple-600';
-                typeLabel = 'Birikim / Yatırım';
+            } else {
+                icon = 'landmark';
+                colorClass = 'bg-blue-50 text-blue-600';
+                typeLabel = 'Banka Hesabı';
             }
 
             return `
@@ -1356,21 +1271,21 @@ const App = {
         const s = DataStore.data.settings;
 
         const userNameInput = document.getElementById('admin-user-name');
-        if (userNameInput) {
-            userNameInput.value = s.userName || 'Benim Bütçem';
-            document.getElementById('admin-currency').value = s.currency || '₺';
-            document.getElementById('admin-salary-target').value = s.monthlySalaryTarget || 65000;
-        }
+        if (userNameInput) userNameInput.value = s.userName || 'Benim Bütçem';
+
+        const curInput = document.getElementById('admin-currency');
+        if (curInput) curInput.value = s.currency || '₺';
+
+        const salInput = document.getElementById('admin-salary-target');
+        if (salInput) salInput.value = s.monthlySalaryTarget || 65000;
 
         const accountsContainer = document.getElementById('admin-accounts-list');
         if (accountsContainer) {
             accountsContainer.innerHTML = DataStore.data.accounts.map(acc => {
                 let tag = 'HESAP';
-                if (acc.type === 'kasa' || acc.type === 'emergency') tag = '1. KUTU • KASA (ACİL DURUM)';
-                else if (acc.type === 'altin') tag = '2. KUTU • ALTIN HESABI';
-                else if (acc.type === 'fon') tag = '3. KUTU • YATIRIM FONU';
-                else if (acc.type === 'cash') tag = 'HARCANABİLİR • NAKİT';
-                else if (acc.type === 'bank') tag = 'HARCANABİLİR • VADESİZ BANKA';
+                if (acc.type === 'kasa' || acc.type === 'emergency') tag = 'KASA (ACİL DURUM)';
+                else if (acc.type === 'cash') tag = 'CEBİMDEKİ PARA • NAKİT';
+                else if (acc.type === 'bank') tag = 'CEBİMDEKİ PARA • VADESİZ BANKA';
 
                 return `
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">

@@ -47,13 +47,6 @@
                     <span id="nav-wishlist-count" class="text-[10px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded font-bold border border-teal-500/30">0</span>
                 </div>
             </a>
-            <a href="#funds" data-tab="funds" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
-                <i data-lucide="coins" class="w-4 h-4 text-amber-400"></i>
-                <div class="flex items-center justify-between flex-1">
-                    <span>Fon & Yatırım</span>
-                    <span id="nav-funds-badge" class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold border border-amber-500/30">3 Kutu</span>
-                </div>
-            </a>
             <a href="#accounts" data-tab="accounts" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors">
                 <i data-lucide="landmark" class="w-4 h-4"></i>
                 <span>Hesaplarım & Kasa</span>
@@ -100,17 +93,17 @@
                 <!-- 5 ANA KUTU -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     
-                    <!-- KUTU 1: TOPLAM PARA (ELİMDEKİ PARA) -->
+                    <!-- KUTU 1: CEBİMDEKİ PARA -->
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Toplam Para (Elimdeki)</span>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Cebimdeki Para</span>
                             <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                                 <i data-lucide="wallet" class="w-5 h-5"></i>
                             </div>
                         </div>
                         <div class="mt-4">
                             <h3 id="box-total-money" class="text-2xl font-bold text-slate-900 tracking-tight">₺0,00</h3>
-                            <p class="text-[11px] text-slate-400 mt-1">Harcanabilir aktif nakit & banka</p>
+                            <p class="text-[11px] text-slate-400 mt-1">Harcanabilir nakit & banka</p>
                         </div>
                     </div>
 
@@ -142,31 +135,37 @@
                         </div>
                     </div>
 
-                    <!-- KUTU 4: BU AY ALINACAKLAR (TAHMİNİ GİDER) -->
+                    <!-- KUTU 4: ALINACAKLAR (TAHMİNİ GİDER) -->
                     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onclick="App.switchTab('wishlist')">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Bu Ay Alınacaklar</span>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Alınacaklar</span>
                             <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
                                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
                             </div>
                         </div>
                         <div class="mt-4">
                             <h3 id="box-wishlist-expense" class="text-2xl font-bold text-teal-600 tracking-tight">₺0,00</h3>
-                            <p class="text-[11px] text-slate-400 mt-1" id="box-wishlist-sub">Tahmini alışveriş bütçesi</p>
+                            <p class="text-[11px] text-slate-400 mt-1" id="box-wishlist-sub">Bu ayki tahmini bütçe</p>
                         </div>
                     </div>
 
-                    <!-- KUTU 5: KASA & YATIRIM (AYRI HESAP) -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onclick="App.switchTab('funds')">
+                    <!-- KUTU 5: KASA (ACİL DURUM PARASI) + AKTAR BUTONU -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Kasa & Yatırım</span>
-                            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                                <i data-lucide="coins" class="w-5 h-5"></i>
-                            </div>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Kasa (Acil Durum)</span>
+                            <button onclick="App.openTransferToKasaModal()" class="flex items-center gap-1.5 px-3 py-1 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white rounded-lg text-xs font-bold shadow-sm transition-all cursor-pointer" title="Cebimden Kasaya Para Aktar">
+                                <i data-lucide="arrow-right-left" class="w-3.5 h-3.5"></i>
+                                <span>Aktar</span>
+                            </button>
                         </div>
-                        <div class="mt-4">
-                            <h3 id="box-emergency-money" class="text-2xl font-bold text-amber-600 tracking-tight">₺0,00</h3>
-                            <p class="text-[11px] text-slate-400 mt-1">Kasa, Altın & Fon (Ayrı Güvence)</p>
+                        <div class="mt-4 flex items-baseline justify-between">
+                            <div>
+                                <h3 id="box-emergency-money" class="text-2xl font-bold text-amber-600 tracking-tight">₺0,00</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Cebimden ayrılan güvence</p>
+                            </div>
+                            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -414,163 +413,7 @@
                 </div>
             </section>
 
-            <!-- 5. FON & YATIRIM (KASA, ALTIN, FON) TABI -->
-            <section id="tab-funds" class="tab-content space-y-6">
-                <!-- Üst Özet ve Aksiyon Kartı -->
-                <div class="bg-gradient-to-r from-amber-900 via-amber-800 to-slate-900 p-6 rounded-2xl text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-400 shadow-inner">
-                            <i data-lucide="coins" class="w-7 h-7"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-300">Toplam Kasa & Yatırım Varlığı</span>
-                            <h3 id="funds-total-value" class="text-3xl font-extrabold text-white tracking-tight mt-0.5">₺0,00</h3>
-                            <p class="text-xs text-amber-200/80 mt-1">Elimdeki harcanabilir paradan bağımsız, güvence ve birikim havuzu</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3 w-full md:w-auto">
-                        <button onclick="App.openFundTransferModal('deposit')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-3 rounded-xl shadow-sm transition-all hover:shadow-md text-xs">
-                            <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
-                            <span>+ Para Yükle (Yatırım Yap)</span>
-                        </button>
-                        <button onclick="App.openFundTransferModal('withdraw')" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-3 rounded-xl shadow-sm transition-all hover:shadow-md text-xs">
-                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
-                            <span>- Para Çek (Bozdur)</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 3 ANA FON KUTUSU: KASA, ALTIN, FON -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    
-                    <!-- KUTU 1: KASA (ACİL DURUM PARASI) -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-28 h-28 bg-amber-50 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">1. Kutu • Kasa</span>
-                                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
-                                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
-                                </div>
-                            </div>
-                            <h4 class="text-base font-bold text-slate-800">Kasa (Acil Durum Parası)</h4>
-                            <p class="text-xs text-slate-400 mt-0.5">Maaştan ayrılan, acil ihtiyaçlar için güvence</p>
-                            
-                            <div class="mt-6">
-                                <span class="text-xs text-slate-400 font-medium">Kasa Bakiyesi</span>
-                                <h3 id="fund-bal-kasa" class="text-2xl font-extrabold text-slate-900 tracking-tight mt-1">₺0,00</h3>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2">
-                            <button onclick="App.openFundTransferModal('deposit', 'fund-kasa')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                <span>Kasaya Yükle</span>
-                            </button>
-                            <button onclick="App.openFundTransferModal('withdraw', 'fund-kasa')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                                <span>Kasadan Çek</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- KUTU 2: ALTIN -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-28 h-28 bg-yellow-50 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-yellow-700 bg-yellow-50 px-2.5 py-1 rounded-lg border border-yellow-200">2. Kutu • Altın</span>
-                                <div class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-700 flex items-center justify-center">
-                                    <i data-lucide="award" class="w-5 h-5"></i>
-                                </div>
-                            </div>
-                            <h4 class="text-base font-bold text-slate-800">Altın Hesabı</h4>
-                            <p class="text-xs text-slate-400 mt-0.5">Gram, çeyrek altın ve değerli maden birikimi</p>
-                            
-                            <div class="mt-6">
-                                <span class="text-xs text-slate-400 font-medium">Altın Varlığı</span>
-                                <h3 id="fund-bal-altin" class="text-2xl font-extrabold text-slate-900 tracking-tight mt-1">₺0,00</h3>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2">
-                            <button onclick="App.openFundTransferModal('deposit', 'fund-altin')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                <span>Altın Al (Yükle)</span>
-                            </button>
-                            <button onclick="App.openFundTransferModal('withdraw', 'fund-altin')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                                <span>Altın Sat (Boz)</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- KUTU 3: FON -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-28 h-28 bg-indigo-50 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">3. Kutu • Fon</span>
-                                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
-                                    <i data-lucide="trending-up" class="w-5 h-5"></i>
-                                </div>
-                            </div>
-                            <h4 class="text-base font-bold text-slate-800">Yatırım Fonu (TEFAS / Hisse)</h4>
-                            <p class="text-xs text-slate-400 mt-0.5">Büyüme odaklı portföy ve yatırım fonları</p>
-                            
-                            <div class="mt-6">
-                                <span class="text-xs text-slate-400 font-medium">Fon Portföy Değeri</span>
-                                <h3 id="fund-bal-fon" class="text-2xl font-extrabold text-slate-900 tracking-tight mt-1">₺0,00</h3>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2">
-                            <button onclick="App.openFundTransferModal('deposit', 'fund-fon')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                <span>Fona Yatır</span>
-                            </button>
-                            <button onclick="App.openFundTransferModal('withdraw', 'fund-fon')" class="flex-1 py-2 px-3 bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-700 rounded-lg text-xs font-semibold border border-slate-200 transition-colors flex items-center justify-center gap-1.5">
-                                <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
-                                <span>Fon Sat (Boz)</span>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- FON VE YATIRIM İŞLEM GEÇMİŞİ -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="history" class="w-4 h-4 text-amber-600"></i>
-                            <h4 class="font-bold text-slate-800 text-sm">Fon & Yatırım Hareket Geçmişi</h4>
-                        </div>
-                        <span class="text-xs text-slate-400">Yükleme ve çekme (bozdurma) hareketleri</span>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-100">
-                                <tr>
-                                    <th class="py-3 px-4">Tarih</th>
-                                    <th class="py-3 px-4">Hareket Türü</th>
-                                    <th class="py-3 px-4">İlgili Fon / Kutu</th>
-                                    <th class="py-3 px-4">Bağlı Aktif Hesap</th>
-                                    <th class="py-3 px-4">Açıklama</th>
-                                    <th class="py-3 px-4 text-right">Tutar</th>
-                                    <th class="py-3 px-4 text-center">İşlem</th>
-                                </tr>
-                            </thead>
-                            <tbody id="funds-history-tbody" class="divide-y divide-slate-100">
-                                <!-- Dinamik fon hareketleri -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. HESAPLARIM VE KASA TABI -->
+            <!-- 5. HESAPLARIM VE KASA TABI -->
             <section id="tab-accounts" class="tab-content space-y-5">
                 <div class="flex items-center justify-between">
                     <div>
@@ -982,72 +825,76 @@
         </div>
     </div>
 
-    <!-- 5. FON YÜKLEME VE ÇEKME (TRANSFER) MODALI -->
-    <div id="modal-fund-transfer" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-fund-transfer')"></div>
+    <!-- 5. KASAYA PARA AKTAR MODALI -->
+    <div id="modal-kasa-transfer" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="modal-backdrop fixed inset-0" onclick="App.closeModal('modal-kasa-transfer')"></div>
         <div class="modal-content relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-                <div class="flex items-center gap-2">
-                    <div id="modal-fund-icon" class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
-                        <i data-lucide="coins" class="w-4 h-4"></i>
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-amber-50/70">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-sm">
+                        <i data-lucide="arrow-right-left" class="w-4 h-4"></i>
                     </div>
-                    <h3 id="modal-fund-title" class="font-bold text-slate-900 text-base">Fona Para Aktar / Bozdur</h3>
+                    <div>
+                        <h3 id="modal-kasa-title" class="font-bold text-slate-900 text-base">Kasaya Para Aktar</h3>
+                        <p class="text-[11px] text-slate-500">Cebinizdeki paradan acil durum kasasına aktarım</p>
+                    </div>
                 </div>
-                <button onclick="App.closeModal('modal-fund-transfer')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200">
+                <button onclick="App.closeModal('modal-kasa-transfer')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <form id="fund-transfer-form" onsubmit="App.saveFundTransfer(event)" class="p-6 space-y-4 text-xs">
+            <form id="kasa-transfer-form" onsubmit="App.saveKasaTransfer(event)" class="p-6 space-y-4 text-xs">
                 <div>
-                    <label class="block text-slate-700 font-semibold mb-1">İşlem Türü *</label>
-                    <select id="fund-action-type" onchange="App.onFundActionTypeChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
-                        <option value="deposit">Para Yükle / Yatırım Yap (Bendeki Para Düşer, Fon Artar)</option>
-                        <option value="withdraw">Para Çek / Bozdur (Fon Düşer, Bendeki Para & Gelir Artar)</option>
+                    <label class="block text-slate-700 font-semibold mb-1">İşlem Yönü *</label>
+                    <select id="kasa-transfer-direction" onchange="App.onKasaDirectionChange()" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                        <option value="to_kasa">Cebimden ➔ Kasaya Aktar (Birikim Yap)</option>
+                        <option value="from_kasa">Kasadan ➔ Cebime Aktar (İhtiyaç / Para Çek)</option>
                     </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-700 font-semibold mb-1" id="label-fund-target">Kasa / Yatırım Kutusu *</label>
-                        <select id="fund-target-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
-                            <!-- Kasa, Altın, Fon -->
-                        </select>
+                <div>
+                    <label class="block text-slate-700 font-semibold mb-1">Aktarılacak Tutar (₺) *</label>
+                    <div class="relative">
+                        <input type="number" id="kasa-transfer-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-base font-bold text-slate-900 pr-10">
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₺</span>
                     </div>
-                    <div>
-                        <label class="block text-slate-700 font-semibold mb-1" id="label-fund-source">Elimdeki Aktif Hesap *</label>
-                        <select id="fund-source-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
-                            <!-- Banka & Nakit cüzdan -->
-                        </select>
+                    <!-- Hızlı Tutar Seçimi -->
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                        <button type="button" onclick="App.setKasaQuickAmount(1000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+1.000 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(2500)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+2.500 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(5000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+5.000 ₺</button>
+                        <button type="button" onclick="App.setKasaQuickAmount(10000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold text-[11px] transition-colors">+10.000 ₺</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-slate-700 font-semibold mb-1">Tutar (₺) *</label>
-                        <input type="number" id="fund-amount" step="0.01" min="0.01" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900">
+                        <label class="block text-slate-700 font-semibold mb-1" id="label-kasa-pocket-acc">Cebimdeki Hesap *</label>
+                        <select id="kasa-pocket-account-id" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold">
+                            <!-- Dinamik cebimdeki hesaplar (Maaş / Nakit) -->
+                        </select>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-semibold mb-1">Tarih *</label>
-                        <input type="date" id="fund-date" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
+                        <input type="date" id="kasa-transfer-date" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-slate-700 font-semibold mb-1">Açıklama / Not</label>
-                    <input type="text" id="fund-note" placeholder="Örn: Maaştan kasaya aktarım veya altın bozdurma" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                    <input type="text" id="kasa-transfer-note" placeholder="Örn: Maaştan kenara ayrılan acil durum güvencesi" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs">
                 </div>
 
-                <!-- Bilgilendirme Kutusu -->
-                <div id="fund-info-box" class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-[11px] leading-relaxed">
-                    <!-- Dinamik açıklama -->
+                <div id="kasa-info-box" class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-[11px] leading-relaxed">
+                    <strong>Bilgi:</strong> Belirlediğiniz tutar cebinizdeki harcanabilir paradan düşecek ve <strong>Kasa (Acil Durum)</strong> hesabınıza eklenecektir.
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-                    <button type="button" onclick="App.closeModal('modal-fund-transfer')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
+                    <button type="button" onclick="App.closeModal('modal-kasa-transfer')" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium">
                         Vazgeç
                     </button>
-                    <button type="submit" id="fund-submit-btn" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold shadow-sm transition-all">
-                        İşlemi Gerçekleştir
+                    <button type="submit" id="kasa-transfer-submit-btn" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold shadow-sm transition-all">
+                        Kasaya Aktar
                     </button>
                 </div>
             </form>
